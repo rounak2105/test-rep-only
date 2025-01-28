@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 222 17% 7%;
+  --foreground: 0 0% 90%;
+  --card: 222 17% 7%;
+  --card-foreground: 0 0% 90%;
+  --popover: 222 17% 7%;
+  --popover-foreground: 0 0% 90%;
+  --primary: 215 13% 47%;
+  --primary-foreground: 0 0% 90%;
+  --secondary: 215 13% 47%;
+  --secondary-foreground: 0 0% 90%;
+  --muted: 215 13% 47%;
+  --muted-foreground: 0 0% 70%;
+  --accent: 215 13% 47%;
+  --accent-foreground: 0 0% 90%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 90%;
+  --border: 215 13% 47%;
+  --input: 215 13% 47%;
+  --ring: 215 13% 47%;
+  --ai-button: 265 100% 67%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+.footer {
+  background-color: #0d1117;
+  color: white;
+}
+
+.footer ul {
+  padding: 0;
+  list-style: none;
+  text-align: center;
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.footer li {
+  display: inline-block;
+  padding: 0 10px;
+}
+
+.footer ul a {
+  color: inherit;
+  text-decoration: none;
+  opacity: 0.8;
+}
+
+.footer ul a:hover {
+  opacity: 1;
+}
+
+.footer .copyright {
+  text-align: center;
+  font-size: 13px;
+  color: #aaa;
+  margin-bottom: 0;
+}
+
