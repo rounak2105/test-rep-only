@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link"
 import Image from "next/image"
 import { Sparkles, Filter, BookOpen, Menu } from "lucide-react"
