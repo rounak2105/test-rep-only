@@ -13,13 +13,38 @@ export default function FeedbackPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    setIsSubmitting(false)
-    setSubmitted(true)
+
+    const formData = new FormData(e.currentTarget)
+    const data = {
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      feedbackType: formData.get("feedbackType") as string,
+      message: formData.get("message") as string,
+    }
+
+    try {
+      const response = await fetch("https://bingeit-backend.onrender.com/feedback", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to submit feedback")
+      }
+
+      setSubmitted(true)
+    } catch (error) {
+      console.error("Error submitting feedback:", error)
+      // You might want to show an error message to the user here
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (submitted) {
@@ -81,19 +106,26 @@ export default function FeedbackPage() {
                 <label className="text-sm font-medium" htmlFor="name">
                   Name
                 </label>
-                <Input id="name" placeholder="Your name" required className="bg-background" />
+                <Input name="name" id="name" placeholder="Your name" required className="bg-background" />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium" htmlFor="email">
                   Email
                 </label>
-                <Input id="email" type="email" placeholder="your@email.com" required className="bg-background" />
+                <Input
+                  name="email"
+                  id="email"
+                  type="email"
+                  placeholder="your@email.com"
+                  required
+                  className="bg-background"
+                />
               </div>
             </div>
 
             <div className="space-y-2">
               <label className="text-sm font-medium">Feedback Type</label>
-              <Select defaultValue="general">
+              <Select name="feedbackType" defaultValue="general">
                 <SelectTrigger className="bg-background">
                   <SelectValue placeholder="Select feedback type" />
                 </SelectTrigger>
@@ -111,6 +143,7 @@ export default function FeedbackPage() {
                 Your Message
               </label>
               <Textarea
+                name="message"
                 id="message"
                 placeholder="Tell us what you think..."
                 required

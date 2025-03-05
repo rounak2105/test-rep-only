@@ -1,5 +1,4 @@
 import axios from "axios"
-import { getLanguageCode, getGenreIds } from "./utils"
 
 const API_BASE_URL = "https://bingeit-backend.onrender.com"
 
@@ -14,6 +13,7 @@ export interface Show {
   originalCountry: string[]
   showType: "tv" | "movie"
   watchProviders: number[]
+  trailerLink?: string // Added trailerLink as optional
 }
 
 export interface Movie {
@@ -64,6 +64,23 @@ export interface AIResponse {
   data: {
     movies: AIMovie[]
   }
+}
+
+export interface Content {
+  id: string
+  title: string
+  image: string
+  genre: string
+  platform: string
+  releaseDate: string
+  language: string
+  posterUrl?: string
+}
+
+export interface Filters {
+  genre: string
+  country: string
+  language: string
 }
 
 export const fetchShows = async (
@@ -121,28 +138,6 @@ export const generateAIRecommendations = async (query: string): Promise<AIRespon
   } catch (error) {
     console.error("Error generating AI recommendations:", error)
     throw error
-  }
-}
-
-const filterByDate = (date: string, filter: string) => {
-  const contentDate = new Date(date)
-  const now = new Date()
-  const daysDifference = Math.ceil((contentDate.getTime() - now.getTime()) / (1000 * 3600 * 24))
-  switch (filter) {
-    case "upcoming7days":
-      return daysDifference > 0 && daysDifference <= 7
-    case "upcoming14days":
-      return daysDifference > 0 && daysDifference <= 14
-    case "upcoming30days":
-      return daysDifference > 0 && daysDifference <= 30
-    case "past7days":
-      return daysDifference >= -7 && daysDifference <= 0
-    case "past14days":
-      return daysDifference >= -14 && daysDifference <= 0
-    case "past30days":
-      return daysDifference >= -30 && daysDifference <= 0
-    default:
-      return true
   }
 }
 

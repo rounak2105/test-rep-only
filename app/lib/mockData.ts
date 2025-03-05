@@ -52,6 +52,7 @@ export interface Show {
   originalCountry: string[]
   showType: "tv" | "movie"
   watchProviders: number[]
+  trailerLink?: string
 }
 
 export interface Provider {
@@ -91,6 +92,7 @@ export const mockMovies: Provider[] = [
         originalCountry: ["US"],
         showType: "movie",
         watchProviders: [8],
+        trailerLink: "https://www.youtube.com/watch?v=example1", // Added trailer link
       },
       {
         id: 1002,
@@ -104,6 +106,7 @@ export const mockMovies: Provider[] = [
         originalCountry: ["JP"],
         showType: "movie",
         watchProviders: [8],
+        trailerLink: null, // Example of no trailer link
       },
     ],
   },
@@ -408,7 +411,7 @@ Blockbusters often have marketing budgets nearly as large as their production bu
 Finally, after years of work, the film premieres. For major blockbusters, this often involves a star-studded event and a coordinated global release to build maximum buzz.
 
 Conclusion
-The making of a blockbuster is a mammoth undertaking, requiring the coordinated efforts of countless talented individuals across various disciplines. From the first spark of an idea to the final screening, every step of the process is crucial in creating the cinematic spectacles that captivate audiences worldwide. The next time you're marveling at a big-screen extravaganza, take a moment to appreciate the years of work and dedication that went into bringing that story to life. The magic of movies is not just in what we see on screen, but in the incredible journey it took to get there.
+The making of a blockbuster is a mammoth undertaking, requiring the coordinated efforts of countless talented individuals across various disciplines. From the first spark of an idea to the final screening, every step of the process is crucial in creating the cinematic spectacles that captivate audiences worldwide. The next time you're marveling at a big-screen extravaganza, take a moment to appreciate the years of work and dedication that went into bringing that story to life.
 
 From the initial spark of an idea to the final cut, and from the first marketing teaser to the global premiere, every blockbuster represents a monumental collaborative effort. It's a testament to human creativity, technological innovation, and the enduring power of storytelling.
 

@@ -7,6 +7,7 @@ import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { fetchBlogById, type BlogPost } from "../../lib/api"
+import BlogNotFound from "../../components/BlogNotFound"
 
 export default function BlogPost() {
   const params = useParams()
@@ -32,7 +33,7 @@ export default function BlogPost() {
   }
 
   if (!post) {
-    return <div className="container mx-auto px-4 py-8">Post not found</div>
+    return <BlogNotFound />
   }
 
   return (
@@ -55,7 +56,8 @@ export default function BlogPost() {
         <Image
           src={
             post.imageUrl ||
-            "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/wmremove-transformed-removebg-preview%20copy-BS27BeyqzuiM6yYWnFXEw5ymZC4ePX.png"
+            "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/wmremove-transformed-removebg-preview%20copy-BS27BeyqzuiM6yYWnFXEw5ymZC4ePX.png" ||
+            "/placeholder.svg"
           }
           alt={post.title}
           layout="fill"

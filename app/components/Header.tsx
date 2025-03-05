@@ -1,4 +1,3 @@
-"use client"
 import Link from "next/link"
 import Image from "next/image"
 import { Sparkles, Filter, BookOpen, Menu } from "lucide-react"
@@ -22,7 +21,7 @@ export default function Header({ showFilter = false, onFilterClick }: HeaderProp
       <nav className="container mx-auto px-4 h-20 flex items-center justify-between">
         <div className="flex items-center space-x-8">
           <Link href="/" className="flex items-center space-x-2">
-            <div className="relative w-12 h-12">
+            <div className="relative w-16 h-16">
               <Image
                 src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-ai-brush-removebg-efek2otq%20(2)-xxLu4tq489nclUJ4RXPzTcv3os4nOi.png"
                 alt="BingeIt Logo"

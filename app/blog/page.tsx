@@ -43,7 +43,7 @@ export default function BlogPage() {
         <div className="flex items-center justify-center gap-4 mb-8">
           <div className="relative w-16 h-16">
             <Image
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/wmremove-transformed-removebg-preview%20copy-4Bes3yn4BzdWqY69Ps2hp1c9h0wBCg.png"
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-ai-brush-removebg-efek2otq%20(2)-xxLu4tq489nclUJ4RXPzTcv3os4nOi.png"
               alt="BingeIt Logo"
               fill
               className="object-contain"
@@ -53,7 +53,7 @@ export default function BlogPage() {
           <h1 className="text-4xl font-bold text-foreground">Blog</h1>
         </div>
         <div className="mb-12">
-          <div className="relative max-w-md mx-auto">
+          <div className="relative max-w-2xl mx-auto">
             <div className="relative">
               <Input
                 type="text"
@@ -68,13 +68,14 @@ export default function BlogPage() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredPosts.map((post) => (
-            <Link href={`/blog/${post._id}`} key={post._id}>
+            <Link href={`/blog/${post.blogId}`} key={post.blogId}>
               <article className="bg-card text-card-foreground rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105">
                 <div className="relative h-48 w-full">
                   <Image
                     src={
                       post.imageUrl ||
                       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/wmremove-transformed-removebg-preview%20copy-4Bes3yn4BzdWqY69Ps2hp1c9h0wBCg.png" ||
+                      "/placeholder.svg" ||
                       "/placeholder.svg"
                     }
                     alt={post.title}

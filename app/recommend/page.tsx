@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { motion } from "framer-motion"
-import { Sparkles, ArrowLeft } from "lucide-react"
+import { Sparkles, ArrowLeft, Clapperboard } from "lucide-react"
 import { generateAIRecommendations, type AIMovie } from "../lib/api"
 import Header from "../components/Header"
 import AILoading from "../components/AILoading"
@@ -31,10 +31,41 @@ export default function RecommendPage() {
       }
     } catch (error) {
       console.error("Error fetching recommendations:", error)
-      setError("Something went wrong. Please try again later.")
+      setError("AI_BREAK")
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const renderErrorMessage = () => {
+    if (error === "AI_BREAK") {
+      return (
+        <motion.div
+          className="text-center p-8 bg-card rounded-lg shadow-lg"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <Clapperboard className="w-16 h-16 text-primary mx-auto mb-4" />
+          <h2 className="text-2xl font-bold mb-4">Oops! Our AI is on a Movie Break</h2>
+          <p className="text-lg text-muted-foreground mb-4">
+            Your query was so intriguing that our AI couldn't resist watching it! 🍿🎬
+          </p>
+          <p className="text-muted-foreground">
+            Don't worry, it'll be back soon with fresh recommendations. In the meantime, why not explore our curated
+            lists?
+          </p>
+        </motion.div>
+      )
+    }
+    return (
+      <motion.div
+        className="text-center text-red-500 p-4 rounded-lg bg-red-500/10"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        {error}
+      </motion.div>
+    )
   }
 
   return (
@@ -84,13 +115,7 @@ export default function RecommendPage() {
         {isLoading ? (
           <AILoading />
         ) : error ? (
-          <motion.div
-            className="text-center text-red-500 p-4 rounded-lg bg-red-500/10"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            {error}
-          </motion.div>
+          renderErrorMessage()
         ) : recommendations.length > 0 ? (
           <motion.div
             className="space-y-4"
