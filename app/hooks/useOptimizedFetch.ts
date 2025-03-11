@@ -1,8 +1,11 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import { fetchShows, type Provider } from "../lib/api"
 import { getGenreIds, getLanguageCode } from "../lib/utils"
 
-const CACHE_DURATION = 60000 // 1 minute in milliseconds
+const CACHE_DURATION = 300000 // 5 minutes in milliseconds
+const STALE_WHILE_REVALIDATE = 3600000 // 1 hour in milliseconds
 
 interface CachedData {
   data: { [key: string]: Provider[] }
@@ -25,9 +28,6 @@ export function useOptimizedFetch(
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true)
-      setError(null)
-
       try {
         const apiFilters: { originalLanguage?: string; genreIds?: number[] } = {}
         if (filters?.language !== "all") {
@@ -38,17 +38,43 @@ export function useOptimizedFetch(
         }
 
         const cacheKey = JSON.stringify({ showType, filters: apiFilters })
-        if (cachedShows && cachedShows.timestamp + CACHE_DURATION > Date.now() && cachedShows.data[cacheKey]) {
+        const now = Date.now()
+
+        // If we have fresh cache, use it immediately
+        if (cachedShows && cachedShows.timestamp + CACHE_DURATION > now && cachedShows.data[cacheKey]) {
           setShows(cachedShows.data[cacheKey])
-        } else {
-          const data = await fetchShows(showType, 100, apiFilters)
-          if (!cachedShows) {
-            cachedShows = { data: {}, timestamp: Date.now() }
-          }
-          cachedShows.data[cacheKey] = data
-          cachedShows.timestamp = Date.now()
-          setShows(data)
+          setIsLoading(false)
+          return
         }
+
+        // If we have stale cache, use it but revalidate in background
+        if (cachedShows && cachedShows.timestamp + STALE_WHILE_REVALIDATE > now && cachedShows.data[cacheKey]) {
+          setShows(cachedShows.data[cacheKey])
+          setIsLoading(false)
+          // Revalidate in background
+          fetchData().catch(console.error)
+          return
+        }
+
+        // No cache or stale cache, fetch new data
+        setIsLoading(true)
+        const data = await fetchShows(showType, 10, apiFilters)
+        
+        // Ensure unique show IDs by prefixing with provider key
+        const processedData = data.map(provider => ({
+          ...provider,
+          shows: provider.shows.map(show => ({
+            ...show,
+            id: `${provider.providerKey}-${show.id}` // Create unique ID by combining provider key and show ID
+          }))
+        }))
+
+        if (!cachedShows) {
+          cachedShows = { data: {}, timestamp: now }
+        }
+        cachedShows.data[cacheKey] = processedData
+        cachedShows.timestamp = now
+        setShows(processedData)
       } catch (err) {
         setError(err instanceof Error ? err : new Error("An error occurred while fetching data"))
       } finally {

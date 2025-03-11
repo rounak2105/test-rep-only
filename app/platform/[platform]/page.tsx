@@ -1,9 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import ContentCard from "../../components/ContentCard"
-import type { Provider, Show } from "../../lib/api"
 import { Button } from "@/components/ui/button"
 import { useTheme } from "../../hooks/useTheme"
 import Header from "../../components/Header"

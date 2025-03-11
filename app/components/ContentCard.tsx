@@ -4,7 +4,7 @@ import type React from "react"
 
 import Image from "next/image"
 import { motion } from "framer-motion"
-import { Play } from "lucide-react"
+import { Play, Film, Tv2, Globe2 } from "lucide-react"
 import type { Show } from "../lib/api"
 import { getLanguageName } from "../lib/utils"
 import { Button } from "@/components/ui/button"
@@ -35,10 +35,10 @@ export default function ContentCard({ content, theme }: ContentCardProps) {
       {content.trailerLink && (
         <Button
           onClick={(e) => handleTrailerClick(e, content.trailerLink!)}
-          className="absolute top-2 right-2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full w-14 h-14 p-0"
+          className="absolute top-2 right-2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full w-10 h-10 p-0"
           size="icon"
         >
-          <Play className="h-7 w-7" />
+          <Play className="h-5 w-5" />
           <span className="sr-only">Watch Trailer</span>
         </Button>
       )}
@@ -46,9 +46,6 @@ export default function ContentCard({ content, theme }: ContentCardProps) {
         src={
           content.posterUrl ||
           "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-ai-brush-removebg-efek2otq%20(2)-xxLu4tq489nclUJ4RXPzTcv3os4nOi.png" ||
-          "/placeholder.svg" ||
-          "/placeholder.svg" ||
-          "/placeholder.svg" ||
           "/placeholder.svg"
         }
         alt={content.title}
@@ -63,11 +60,21 @@ export default function ContentCard({ content, theme }: ContentCardProps) {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background opacity-100" />
       <div className="absolute bottom-0 left-0 right-0 p-4 transform transition-transform duration-200 group-hover:translate-y-[-10px]">
         <div className="text-sm font-medium text-primary-foreground mb-1">{formattedDate}</div>
-        <h3 className="text-sm font-semibold text-foreground md:text-base">{content.title}</h3>
-        <div className="text-xs text-muted-foreground">
-          <span>{languageName}</span>
-          <span className="mx-1">•</span>
-          <span>{content.showType.toUpperCase()}</span>
+        <h3 className="text-sm font-semibold text-foreground md:text-base line-clamp-1">{content.title}</h3>
+        <div className="flex items-center space-x-2 text-xs text-muted-foreground mt-1">
+          <div className="flex items-center">
+            <Globe2 className="h-3 w-3 mr-1" />
+            <span className="capitalize">{languageName}</span>
+          </div>
+          <span>•</span>
+          <div className="flex items-center">
+            {content.showType === "movie" ? (
+              <Film className="h-3 w-3 mr-1" />
+            ) : (
+              <Tv2 className="h-3 w-3 mr-1" />
+            )}
+            <span className="capitalize">{content.showType}</span>
+          </div>
         </div>
       </div>
     </motion.div>

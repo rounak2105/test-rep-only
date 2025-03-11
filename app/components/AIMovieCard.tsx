@@ -1,3 +1,5 @@
+"use client"
+
 import { motion } from "framer-motion"
 import { Star, Calendar, Film, Globe2 } from "lucide-react"
 import type { AIMovie } from "../lib/api"

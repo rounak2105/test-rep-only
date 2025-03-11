@@ -65,7 +65,12 @@ export default function MoviesPage() {
         {isPageLoaded && filteredContents.length > 0 ? (
           filteredContents.map((provider) => (
             <div key={`provider-${provider.providerKey}`} className="space-y-4">
-              <ContentRow title={`${provider.providerName} Movies`} contents={provider.shows} theme={theme} />
+              <ContentRow 
+                title={`${provider.providerName} Movies`} 
+                contents={provider.shows} 
+                theme={theme}
+                providerKey={provider.providerKey}
+              />
               <div className="text-right">
                 <Link href={`/platform/${provider.providerName.toLowerCase().replace(" ", "-")}`} passHref>
                   <Button

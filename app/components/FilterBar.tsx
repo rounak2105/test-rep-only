@@ -1,4 +1,6 @@
-import { Filters } from '../lib/api'
+"use client"
+
+import type { Filters } from "../lib/api"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 interface FilterBarProps {
@@ -10,10 +12,7 @@ interface FilterBarProps {
 export default function FilterBar({ filters, setFilters, options }: FilterBarProps) {
   return (
     <div className="px-4 py-2 flex flex-wrap gap-4 items-center justify-center bg-black/50 backdrop-blur-sm">
-      <Select
-        value={filters.genre}
-        onValueChange={(value) => setFilters({ ...filters, genre: value })}
-      >
+      <Select value={filters.genre} onValueChange={(value) => setFilters({ ...filters, genre: value })}>
         <SelectTrigger className="w-[160px] bg-black/50 border-gray-700 text-white">
           <SelectValue placeholder="Genre" />
         </SelectTrigger>
@@ -27,10 +26,7 @@ export default function FilterBar({ filters, setFilters, options }: FilterBarPro
         </SelectContent>
       </Select>
 
-      <Select
-        value={filters.country}
-        onValueChange={(value) => setFilters({ ...filters, country: value })}
-      >
+      <Select value={filters.country} onValueChange={(value) => setFilters({ ...filters, country: value })}>
         <SelectTrigger className="w-[160px] bg-black/50 border-gray-700 text-white">
           <SelectValue placeholder="Country" />
         </SelectTrigger>
@@ -44,10 +40,7 @@ export default function FilterBar({ filters, setFilters, options }: FilterBarPro
         </SelectContent>
       </Select>
 
-      <Select
-        value={filters.language}
-        onValueChange={(value) => setFilters({ ...filters, language: value })}
-      >
+      <Select value={filters.language} onValueChange={(value) => setFilters({ ...filters, language: value })}>
         <SelectTrigger className="w-[160px] bg-black/50 border-gray-700 text-white">
           <SelectValue placeholder="Language" />
         </SelectTrigger>

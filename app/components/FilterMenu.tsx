@@ -1,88 +1,170 @@
+"use client"
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
-import { X } from "lucide-react"
+import { X, Filter, Search, Check } from "lucide-react"
 import { languageMap, genreMap } from "../lib/utils"
+import { motion, AnimatePresence } from "framer-motion"
+import { useState } from "react"
+import { Input } from "@/components/ui/input"
 
 interface FilterMenuProps {
   filters: {
     genre: string
     language: string
-    releaseDate: string
   }
   setFilters: (filters: any) => void
   onClose: () => void
-  theme: "dark" | "light"
 }
 
-export default function FilterMenu({ filters, setFilters, onClose, theme }: FilterMenuProps) {
+export default function FilterMenu({ filters, setFilters, onClose }: FilterMenuProps) {
+  const [genreSearch, setGenreSearch] = useState("")
+  const [languageSearch, setLanguageSearch] = useState("")
+  const [tempFilters, setTempFilters] = useState(filters)
+
   const options = {
     genre: genreMap.map((g) => g.name),
     language: Object.values(languageMap),
-    releaseDate: ["all", "upcoming7days", "upcoming14days", "upcoming30days", "past7days", "past14days", "past30days"],
+  }
+
+  const filteredGenres = options.genre.filter(genre => 
+    genre.toLowerCase().includes(genreSearch.toLowerCase())
+  )
+
+  const filteredLanguages = options.language.filter(language => 
+    language.toLowerCase().includes(languageSearch.toLowerCase())
+  )
+
+  const handleApplyFilters = () => {
+    setFilters(tempFilters)
+    onClose()
+  }
+
+  const handleReset = () => {
+    const resetFilters = { genre: "all", language: "all" }
+    setTempFilters(resetFilters)
+    setFilters(resetFilters)
+    onClose()
   }
 
   return (
-    <div
-      className={`fixed top-16 right-0 w-64 h-screen ${theme === "dark" ? "bg-gray-900" : "bg-gray-100"} p-4 shadow-lg z-40`}
-    >
-      <div className="flex justify-between items-center mb-4">
-        <h2 className={`text-lg font-bold ${theme === "dark" ? "text-white" : "text-black"}`}>Filters</h2>
-        <Button variant="ghost" size="icon" onClick={onClose}>
-          <X className="h-5 w-5" />
-        </Button>
-      </div>
-      <div className="space-y-4">
-        <div>
-          <label className={`block mb-2 ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>Genre</label>
-          <Select value={filters.genre} onValueChange={(value) => setFilters({ ...filters, genre: value })}>
-            <SelectTrigger className={theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-black"}>
-              <SelectValue placeholder="Select genre" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Genres</SelectItem>
-              {options.genre.map((genre) => (
-                <SelectItem key={genre} value={genre}>
-                  {genre}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+    <AnimatePresence>
+      <motion.div
+        key="backdrop"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+      />
+      <motion.div
+        key="filter-menu"
+        initial={{ x: "100%" }}
+        animate={{ x: 0 }}
+        exit={{ x: "100%" }}
+        transition={{ type: "spring", damping: 20, stiffness: 100 }}
+        onClick={(e) => e.stopPropagation()}
+        className="fixed top-0 right-0 w-80 h-screen bg-black/95 backdrop-blur-md p-6 shadow-2xl z-50 border-l border-white/10"
+      >
+        <div className="flex justify-between items-center mb-8">
+          <div className="flex items-center space-x-2">
+            <Filter className="h-5 w-5 text-primary" />
+            <h2 className="text-xl font-semibold text-white">Filters</h2>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className="rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            <X className="h-5 w-5" />
+          </Button>
         </div>
-        <div>
-          <label className={`block mb-2 ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>Language</label>
-          <Select value={filters.language} onValueChange={(value) => setFilters({ ...filters, language: value })}>
-            <SelectTrigger className={theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-black"}>
-              <SelectValue placeholder="Select language" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Languages</SelectItem>
-              {options.language.map((language) => (
-                <SelectItem key={language} value={language}>
-                  {language}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+
+        <div className="space-y-6">
+          <div>
+            <label className="block mb-3 text-sm font-medium text-gray-300">Genre</label>
+            <Select value={tempFilters.genre} onValueChange={(value) => setTempFilters({ ...tempFilters, genre: value })}>
+              <SelectTrigger className="w-full h-12 bg-white/5 border-white/10 text-white hover:bg-white/10 rounded-xl transition-colors">
+                <SelectValue placeholder="Explore all genres" />
+              </SelectTrigger>
+              <SelectContent className="bg-zinc-900 border-white/10 max-h-[280px] p-0">
+                <div className="sticky top-0 z-10 bg-zinc-900 pt-2 px-2 pb-2 border-b border-white/10">
+                  <div className="relative">
+                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
+                    <Input
+                      placeholder="Search genres..."
+                      value={genreSearch}
+                      onChange={(e) => setGenreSearch(e.target.value)}
+                      className="w-full pl-8 h-9 bg-white/5 border-white/10 text-white text-sm rounded-lg focus:ring-0 focus:border-white/20"
+                    />
+                  </div>
+                </div>
+                <div className="overflow-y-auto max-h-[200px] py-1">
+                  <SelectItem value="all" className="text-gray-200 focus:bg-white/10 focus:text-white px-2">
+                    All Genres
+                  </SelectItem>
+                  {filteredGenres.map((genre, index) => (
+                    <SelectItem key={index} value={genre} className="text-gray-200 focus:bg-white/10 focus:text-white px-2">
+                      {genre}
+                    </SelectItem>
+                  ))}
+                </div>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <label className="block mb-3 text-sm font-medium text-gray-300">Language</label>
+            <Select value={tempFilters.language} onValueChange={(value) => setTempFilters({ ...tempFilters, language: value })}>
+              <SelectTrigger className="w-full h-12 bg-white/5 border-white/10 text-white hover:bg-white/10 rounded-xl transition-colors">
+                <SelectValue placeholder="Choose language" />
+              </SelectTrigger>
+              <SelectContent className="bg-zinc-900 border-white/10 max-h-[280px] p-0">
+                <div className="sticky top-0 z-10 bg-zinc-900 pt-2 px-2 pb-2 border-b border-white/10">
+                  <div className="relative">
+                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
+                    <Input
+                      placeholder="Search languages..."
+                      value={languageSearch}
+                      onChange={(e) => setLanguageSearch(e.target.value)}
+                      className="w-full pl-8 h-9 bg-white/5 border-white/10 text-white text-sm rounded-lg focus:ring-0 focus:border-white/20"
+                    />
+                  </div>
+                </div>
+                <div className="overflow-y-auto max-h-[200px] py-1">
+                  <SelectItem value="all" className="text-gray-200 focus:bg-white/10 focus:text-white px-2">
+                    All Languages
+                  </SelectItem>
+                  {filteredLanguages.map((language, index) => (
+                    <SelectItem key={index} value={language} className="text-gray-200 focus:bg-white/10 focus:text-white px-2">
+                      {language}
+                    </SelectItem>
+                  ))}
+                </div>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="pt-4 space-y-3">
+            <Button
+              onClick={handleApplyFilters}
+              className="w-full h-12 bg-primary hover:bg-primary/90 text-white rounded-xl transition-colors flex items-center justify-center space-x-2"
+            >
+              <Check className="h-5 w-5" />
+              <span>Apply Filters</span>
+            </Button>
+            <Button
+              onClick={handleReset}
+              variant="ghost"
+              className="w-full h-12 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl border border-white/10 transition-colors"
+            >
+              Reset Filters
+            </Button>
+          </div>
         </div>
-        <div>
-          <label className={`block mb-2 ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>Release Date</label>
-          <Select value={filters.releaseDate} onValueChange={(value) => setFilters({ ...filters, releaseDate: value })}>
-            <SelectTrigger className={theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-black"}>
-              <SelectValue placeholder="Select release date" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Time</SelectItem>
-              <SelectItem value="upcoming7days">Upcoming in 7 days</SelectItem>
-              <SelectItem value="upcoming14days">Upcoming in 14 days</SelectItem>
-              <SelectItem value="upcoming30days">Upcoming in 30 days</SelectItem>
-              <SelectItem value="past7days">Past 7 days</SelectItem>
-              <SelectItem value="past14days">Past 14 days</SelectItem>
-              <SelectItem value="past30days">Past 30 days</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-    </div>
+      </motion.div>
+    </AnimatePresence>
   )
 }
 

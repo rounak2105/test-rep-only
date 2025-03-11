@@ -1,8 +1,8 @@
-"use client";
+"use client"
 
 import Link from "next/link"
 import Image from "next/image"
-import { Sparkles, Filter, BookOpen, Menu } from "lucide-react"
+import { Filter, BookOpen, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { AIRecommendButton } from "./AIRecommendButton"
 import { usePathname } from "next/navigation"
@@ -17,6 +17,11 @@ interface HeaderProps {
 export default function Header({ showFilter = false, onFilterClick }: HeaderProps) {
   const pathname = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+  const handleFilterClick = () => {
+    setIsMenuOpen(false) // Close mobile menu when filter is clicked
+    onFilterClick?.()
+  }
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background shadow-md">
@@ -65,7 +70,7 @@ export default function Header({ showFilter = false, onFilterClick }: HeaderProp
         </div>
         <div className="flex items-center space-x-4">
           {showFilter && (
-            <Button variant="ghost" size="icon" onClick={onFilterClick} className="text-foreground hover:bg-secondary">
+            <Button variant="ghost" size="icon" onClick={handleFilterClick} className="text-foreground hover:bg-secondary">
               <Filter className="h-5 w-5" />
               <span className="sr-only">Filter content</span>
             </Button>

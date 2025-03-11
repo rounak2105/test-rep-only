@@ -3,7 +3,7 @@ import axios from "axios"
 const API_BASE_URL = "https://bingeit-backend.onrender.com"
 
 export interface Show {
-  id: number
+  id: string | number
   title: string
   releaseDate: string
   genreIds: number[]
