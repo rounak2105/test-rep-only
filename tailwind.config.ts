@@ -88,9 +88,54 @@ const config: Config = {
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out'
-  		}
+  		},
+  		typography: {
+  			DEFAULT: {
+  				css: {
+  					maxWidth: 'none',
+  					color: 'hsl(var(--foreground))',
+  					h1: {
+  						color: 'hsl(var(--foreground))',
+  						fontSize: '2rem',
+  						marginTop: '2rem',
+  						marginBottom: '1rem'
+  					},
+  					h2: {
+  						color: 'hsl(var(--foreground))',
+  						fontSize: '1.5rem',
+  						marginTop: '1.75rem',
+  						marginBottom: '0.75rem'
+  					},
+  					h3: {
+  						color: 'hsl(var(--foreground))',
+  						fontSize: '1.25rem',
+  						marginTop: '1.5rem',
+  						marginBottom: '0.75rem'
+  					},
+  					p: {
+  						fontSize: '0.975rem',
+  						lineHeight: '1.75',
+  						marginTop: '1rem',
+  						marginBottom: '1rem'
+  					},
+  					strong: {
+  						color: 'hsl(var(--foreground))',
+  						fontWeight: '600'
+  					},
+  					a: {
+  						color: 'hsl(var(--primary))',
+  						'&:hover': {
+  							color: 'hsl(var(--primary))',
+  						},
+  					},
+  				},
+  			},
+  		},
   	}
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require("@tailwindcss/typography")
+  ],
 };
 export default config;

@@ -7,15 +7,24 @@ import Link from "next/link"
 import Image from "next/image"
 import Header from "../components/Header"
 import { fetchAllBlogs, type BlogPost } from "../lib/api"
+import { useTheme } from "../hooks/useTheme"
 
 export default function BlogPage() {
+  const { theme } = useTheme()
   const [searchTerm, setSearchTerm] = useState("")
   const [posts, setPosts] = useState<BlogPost[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const loadPosts = async () => {
-      const allPosts = await fetchAllBlogs()
-      setPosts(allPosts)
+      try {
+        const allPosts = await fetchAllBlogs()
+        setPosts(allPosts)
+      } catch (error) {
+        console.error("Error loading posts:", error)
+      } finally {
+        setIsLoading(false)
+      }
     }
     loadPosts()
   }, [])
@@ -35,21 +44,22 @@ export default function BlogPage() {
     })
   }
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-center gap-4 mb-8">
-          <div className="relative w-16 h-16">
-            <Image
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-ai-brush-removebg-efek2otq%20(2)-xxLu4tq489nclUJ4RXPzTcv3os4nOi.png"
-              alt="BingeIt Logo"
-              fill
-              className="object-contain"
-              priority
-            />
-          </div>
-          <h1 className="text-4xl font-bold text-foreground">Blog</h1>
+      <div className="container mx-auto px-4 py-12">
+        <div className="text-center mb-12">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Discover the latest insights, reviews, and stories from the world of entertainment
+          </p>
         </div>
         <div className="mb-12">
           <div className="relative max-w-2xl mx-auto">
@@ -68,34 +78,53 @@ export default function BlogPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredPosts.map((post) => (
             <Link href={`/blog/${post.blogId}`} key={post.blogId}>
-              <article className="bg-card text-card-foreground rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105">
-                <div className="relative h-48 w-full">
+              <article className="group relative bg-card text-card-foreground rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                <div className="relative w-full aspect-[16/9]">
                   <Image
                     src={
                       post.imageUrl ||
-                      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/wmremove-transformed-removebg-preview%20copy-4Bes3yn4BzdWqY69Ps2hp1c9h0wBCg.png" ||
-                      "/placeholder.svg" ||
-                      "/placeholder.svg"
+                      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/wmremove-transformed-removebg-preview%20copy-4Bes3yn4BzdWqY69Ps2hp1c9h0wBCg.png"
                     }
                     alt={post.title}
-                    layout="fill"
-                    objectFit="cover"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover"
+                    priority={false}
                   />
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background/90" />
                 </div>
                 <div className="p-6">
-                  <h2 className="text-xl font-bold mb-2">{post.title}</h2>
+                  <h2 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors duration-200 line-clamp-2">
+                    {post.title}
+                  </h2>
                   <div className="flex justify-between items-center mb-4">
-                    <span className="px-2 py-1 rounded-full text-sm bg-secondary text-secondary-foreground">
+                    <span className="px-3 py-1 rounded-full text-sm bg-primary/10 text-primary font-medium">
                       {post.category}
                     </span>
                     <span className="text-sm text-muted-foreground">{formatDate(post.createdDate)}</span>
                   </div>
-                  <p className="text-sm text-muted-foreground">By {post.author}</p>
+                  <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                    {post.description}
+                  </p>
+                  <div className="flex items-center text-sm text-muted-foreground">
+                    <span className="font-medium">By {post.author}</span>
+                  </div>
                 </div>
               </article>
             </Link>
           ))}
         </div>
+        {filteredPosts.length === 0 && (
+          <div className="text-center text-foreground px-4 py-12">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+              <Search className="w-8 h-8 text-primary" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2">No Posts Found</h3>
+            <p className="text-lg text-muted-foreground max-w-md mx-auto">
+              No blog posts found matching your search. Try different keywords or check back later for new content! 📚✨
+            </p>
+          </div>
+        )}
       </div>
     </div>
   )

@@ -12,8 +12,10 @@ import { generateAIRecommendations, type AIMovie } from "../lib/api"
 import Header from "../components/Header"
 import AILoading from "../components/AILoading"
 import AIMovieCard from "../components/AIMovieCard"
+import { useTheme } from "../hooks/useTheme"
 
 export default function RecommendPage() {
+  const { theme } = useTheme()
   const [query, setQuery] = useState("")
   const [recommendations, setRecommendations] = useState<AIMovie[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -73,15 +75,17 @@ export default function RecommendPage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <Button
+        onClick={() => router.push("/")}
+        variant="ghost"
+        className={`fixed top-24 left-4 z-40 group font-medium hover:bg-transparent ${
+          theme === "dark" ? "text-gray-300 hover:text-white" : "text-gray-600 hover:text-black"
+        } transition-colors duration-200`}
+      >
+        <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
+        Back to Home
+      </Button>
       <div className="container mx-auto px-4 py-8">
-        <Button
-          onClick={() => router.push("/")}
-          variant="outline"
-          className="mb-8 bg-secondary text-secondary-foreground hover:bg-secondary/90"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Home
-        </Button>
         <motion.h1
           className="text-4xl font-bold text-center text-foreground mb-8"
           initial={{ opacity: 0, y: -20 }}
@@ -126,7 +130,7 @@ export default function RecommendPage() {
             transition={{ duration: 0.5, delay: 0.4 }}
           >
             <h2 className="text-2xl font-bold text-center mb-6">Recommended Movies:</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {recommendations.map((movie) => (
                 <AIMovieCard key={movie.id} movie={movie} />
               ))}

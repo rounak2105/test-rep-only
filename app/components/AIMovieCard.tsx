@@ -20,38 +20,38 @@ export default function AIMovieCard({ movie }: AIMovieCardProps) {
 
   return (
     <motion.div
-      className="bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-border hover:border-primary"
+      className="bg-background rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200 hover:border-primary/40 hover:bg-background/60 backdrop-blur-md"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ scale: 1.02 }}
+      whileHover={{ scale: 1.05 }}
     >
-      <div className="p-6 space-y-4">
-        <div className="space-y-2">
-          <h3 className="text-2xl font-bold text-foreground">{movie.title}</h3>
-          <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-            <div className="flex items-center">
-              <Star className="w-4 h-4 text-yellow-500 mr-1 fill-current" />
-              <span>{movie.imdbRating.toFixed(1)}</span>
+      <div className="p-4 space-y-3">
+        <div className="space-y-1">
+          <h3 className="text-xl font-semibold text-primary line-clamp-2">{movie.title}</h3>
+          <div className="flex flex-wrap items-center gap-3 text-xs text-muted">
+            <div className="flex items-center bg-primary/20 px-2 py-0.5 rounded-full">
+              <Star className="w-3 h-3 text-yellow-400 mr-1 fill-current" />
+              <span className="font-medium">{movie.imdbRating.toFixed(1)}</span>
             </div>
             <div className="flex items-center">
-              <Calendar className="w-4 h-4 mr-1" />
+              <Calendar className="w-3 h-3 mr-1" />
               <span>{formattedDate}</span>
             </div>
             <div className="flex items-center">
-              <Globe2 className="w-4 h-4 mr-1" />
+              <Globe2 className="w-3 h-3 mr-1" />
               <span>{languageName}</span>
             </div>
           </div>
         </div>
 
-        <p className="text-muted-foreground line-clamp-3">{movie.description}</p>
+        <p className="text-muted line-clamp-3 text-xs leading-relaxed">{movie.description}</p>
 
-        <div className="pt-4 flex items-center justify-between border-t border-border">
-          <div className="flex items-center text-sm">
-            <Film className="w-4 h-4 mr-1 text-primary" />
-            <span className="text-primary font-medium">{movie.showType}</span>
+        <div className="pt-3 flex items-center justify-between border-t border-gray-100">
+          <div className="flex items-center text-xs">
+            <Film className="w-3 h-3 mr-1 text-primary" />
+            <span className="text-primary font-medium capitalize">{movie.showType === "tv" ? "TV" : "Movie"}</span>
           </div>
-          <div className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
+          <div className="px-2 py-0.5 rounded-full bg-primary/20 text-primary text-xs font-medium">
             {movie.ottPlatform}
           </div>
         </div>

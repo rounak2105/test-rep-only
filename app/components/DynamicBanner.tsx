@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
-import { Film, Tv2, Globe2 } from "lucide-react"
+import { Film, Tv2, Globe2, TrendingUp } from "lucide-react"
 import type { Show, Provider } from "../lib/api"
 import { getLanguageName } from "../lib/utils"
 
@@ -20,17 +20,29 @@ export default function DynamicBanner({ shows }: DynamicBannerProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
 
   useEffect(() => {
-    // Get 5 random shows from all providers combined
-    const allShows: FeaturedShow[] = shows.flatMap((provider) =>
-      provider.shows
-        .filter((show) => show.posterUrl)
-        .map((show) => ({
-          ...show,
-          providerName: provider.providerName,
-        })),
-    )
-    const shuffled = [...allShows].sort(() => Math.random() - 0.5)
-    setFeaturedShows(shuffled.slice(0, 5))
+    const loadFeaturedShows = async () => {
+      try {
+        // Flatten all shows from all providers
+        const allShows = shows.flatMap((provider) =>
+          provider.shows.map((show) => ({
+            ...show,
+            providerName: provider.providerName,
+          }))
+        )
+
+        // Filter shows that have backdrop_path and sort by popularity
+        const showsWithBackdrop = allShows
+          .filter((show) => show.backdrop_path)
+          .sort((a, b) => b.popularity - a.popularity)
+          .slice(0, 5)
+
+        setFeaturedShows(showsWithBackdrop)
+      } catch (error) {
+        console.error("Error loading featured shows:", error)
+      }
+    }
+
+    loadFeaturedShows()
   }, [shows])
 
   useEffect(() => {
@@ -69,6 +81,7 @@ export default function DynamicBanner({ shows }: DynamicBannerProps) {
         >
           <Image
             src={
+              currentShow.backdrop_path ||
               currentShow.posterUrl ||
               "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-ai-brush-removebg-efek2otq%20(2)-xxLu4tq489nclUJ4RXPzTcv3os4nOi.png"
             }
@@ -83,7 +96,10 @@ export default function DynamicBanner({ shows }: DynamicBannerProps) {
 
           <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12 space-y-3">
             <div className="flex items-center space-x-2 mb-2">
-              <div className="text-white text-3xl">🍿</div>
+              <div className="flex items-center text-white text-sm">
+                <TrendingUp className="h-4 w-4 mr-1" />
+                <span>{currentShow.popularity.toFixed(1)}</span>
+              </div>
             </div>
 
             <h1 className="text-3xl md:text-5xl font-bold text-white max-w-2xl drop-shadow-lg">{currentShow.title}</h1>
@@ -101,7 +117,7 @@ export default function DynamicBanner({ shows }: DynamicBannerProps) {
                   ) : (
                     <Tv2 className="h-4 w-4" />
                   )}
-                  <span className="capitalize">{currentShow.showType}</span>
+                  <span className="capitalize">{currentShow.showType === "movie" ? "Movie" : "TV"}</span>
                 </div>
                 <span>•</span>
                 <span>{currentShow.providerName}</span>

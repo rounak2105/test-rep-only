@@ -4,7 +4,7 @@ import type React from "react"
 
 import Image from "next/image"
 import { motion } from "framer-motion"
-import { Play, Film, Tv2, Globe2 } from "lucide-react"
+import { Play, Film, Tv2, Globe2, TrendingUp } from "lucide-react"
 import type { Show } from "../lib/api"
 import { getLanguageName } from "../lib/utils"
 import { Button } from "@/components/ui/button"
@@ -15,6 +15,8 @@ interface ContentCardProps {
 }
 
 export default function ContentCard({ content, theme }: ContentCardProps) {
+  if (!content.posterUrl) return null;
+
   const date = new Date(content.releaseDate)
   const formattedDate = `${date.getDate()} ${date.toLocaleString("default", { month: "short" })}`
   const languageName = getLanguageName(content.originalLanguage)
@@ -44,18 +46,11 @@ export default function ContentCard({ content, theme }: ContentCardProps) {
       )}
       <Image
         src={
-          content.posterUrl ||
-          "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-ai-brush-removebg-efek2otq%20(2)-xxLu4tq489nclUJ4RXPzTcv3os4nOi.png" ||
-          "/placeholder.svg"
+          content.posterUrl
         }
         alt={content.title}
         fill
         className="object-cover"
-        onError={(e) => {
-          const target = e.target as HTMLImageElement
-          target.src =
-            "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-ai-brush-removebg-efek2otq%20(2)-xxLu4tq489nclUJ4RXPzTcv3os4nOi.png"
-        }}
       />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background opacity-100" />
       <div className="absolute bottom-0 left-0 right-0 p-4 transform transition-transform duration-200 group-hover:translate-y-[-10px]">
@@ -73,8 +68,17 @@ export default function ContentCard({ content, theme }: ContentCardProps) {
             ) : (
               <Tv2 className="h-3 w-3 mr-1" />
             )}
-            <span className="capitalize">{content.showType}</span>
+            <span className="capitalize">{content.showType === "movie" ? "Movie" : "TV"}</span>
           </div>
+          {content.popularity > 0 && (
+            <>
+              <span>•</span>
+              <div className="flex items-center">
+                <TrendingUp className="h-3 w-3 mr-1 text-primary" />
+                <span>{content.popularity.toFixed(1)}</span>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </motion.div>

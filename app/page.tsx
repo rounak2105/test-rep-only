@@ -110,7 +110,6 @@ export default function Home() {
                       title={provider.providerName} 
                       contents={provider.shows} 
                       theme={theme}
-                      providerKey={provider.providerKey}
                     />
                     <div className="text-right mt-4">
                       <Link
@@ -131,14 +130,14 @@ export default function Home() {
                   </div>
                 </div>
               ))
-            ) : (
+            ) : isPageLoaded ? (
               <div className="text-center text-foreground px-4 py-8">
                 <p className="text-lg">
                   Oops! Looks like the stars didn't align for this one. No shows match your filter—time
                   to mix it up and try a new combo. The spotlight's waiting, just not here... yet! 🎭✨
                 </p>
               </div>
-            )}
+            ) : null}
           </div>
         </>
       )}

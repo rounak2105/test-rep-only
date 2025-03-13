@@ -7,9 +7,10 @@ import { Button } from "@/components/ui/button"
 import { useTheme } from "../../hooks/useTheme"
 import Header from "../../components/Header"
 import FilterMenu from "../../components/FilterMenu"
-import OTTBanner from "../../components/OTTBanner"
+import DynamicBanner from "../../components/DynamicBanner"
 import { ArrowLeft } from "lucide-react"
 import { useOptimizedFetch } from "../../hooks/useOptimizedFetch"
+import LoadingSkeleton from "../../components/LoadingSkeleton"
 
 export default function PlatformPage() {
   const { theme } = useTheme()
@@ -37,11 +38,7 @@ export default function PlatformPage() {
   })
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-      </div>
-    )
+    return <LoadingSkeleton />
   }
 
   if (error) {
@@ -51,23 +48,23 @@ export default function PlatformPage() {
   return (
     <div className="min-h-screen bg-background">
       <Header
-        theme={theme}
-        toggleTheme={undefined}
         showFilter={true}
         onFilterClick={() => setShowFilter(!showFilter)}
       />
+      <Button
+        onClick={() => router.push("/")}
+        variant="ghost"
+        className={`fixed top-24 left-4 z-40 group font-medium hover:bg-transparent ${
+          theme === "dark" ? "text-gray-300 hover:text-white" : "text-gray-600 hover:text-black"
+        } transition-colors duration-200`}
+      >
+        <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
+        Back to Home
+      </Button>
       <div className="container mx-auto px-4 py-8">
-        <Button
-          onClick={() => router.push("/")}
-          variant="outline"
-          className="mb-8 bg-secondary text-secondary-foreground hover:bg-secondary/90"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Home
-        </Button>
         {provider ? (
           <>
-            <OTTBanner platform={provider.providerName} contents={provider.shows.slice(0, 3)} />
+            <DynamicBanner shows={[provider]} />
             <h1 className={`text-3xl font-bold ${theme === "dark" ? "text-white" : "text-black"} mt-8 mb-4`}>
               {provider.providerName} Shows
             </h1>
@@ -76,7 +73,6 @@ export default function PlatformPage() {
                 filters={filters}
                 setFilters={setFilters}
                 onClose={() => setShowFilter(false)}
-                theme={theme}
               />
             )}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

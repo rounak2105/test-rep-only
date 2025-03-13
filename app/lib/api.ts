@@ -14,6 +14,8 @@ export interface Show {
   showType: "tv" | "movie"
   watchProviders: number[]
   trailerLink?: string // Added trailerLink as optional
+  backdrop_path?: string
+  popularity: number
 }
 
 export interface Movie {
@@ -43,7 +45,7 @@ export interface BlogPost {
   author: string
   category: string
   body?: string
-  id: string
+  blogId: string
   createdDate: string
   updatedDate: string
 }
@@ -121,9 +123,9 @@ export const fetchAllBlogs = async (): Promise<BlogPost[]> => {
   }
 }
 
-export const fetchBlogById = async (id: string): Promise<BlogPost> => {
+export const fetchBlogById = async (blogId: string): Promise<BlogPost> => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/blog/${id}`)
+    const response = await axios.get(`${API_BASE_URL}/blog/${blogId}`)
     return response.data
   } catch (error) {
     console.error("Error fetching blog:", error)

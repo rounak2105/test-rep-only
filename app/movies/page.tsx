@@ -11,6 +11,7 @@ import Header from "../components/Header"
 import FilterMenu from "../components/FilterMenu"
 import DynamicBanner from "../components/DynamicBanner"
 import { useOptimizedFetch } from "../hooks/useOptimizedFetch"
+import LoadingSkeleton from "../components/LoadingSkeleton"
 
 export default function MoviesPage() {
   const { theme } = useTheme()
@@ -38,11 +39,7 @@ export default function MoviesPage() {
   }, [isLoading, shows])
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-      </div>
-    )
+    return <LoadingSkeleton />
   }
 
   if (error) {
@@ -52,14 +49,16 @@ export default function MoviesPage() {
   return (
     <>
       <Header
-        theme={theme}
-        toggleTheme={undefined}
         showFilter={true}
         onFilterClick={() => setShowFilter(!showFilter)}
       />
       {isPageLoaded && <DynamicBanner shows={shows} />}
       {showFilter && (
-        <FilterMenu filters={filters} setFilters={setFilters} onClose={() => setShowFilter(false)} theme={theme} />
+        <FilterMenu
+          filters={filters}
+          setFilters={setFilters}
+          onClose={() => setShowFilter(false)}
+        />
       )}
       <div className="space-y-12 pt-8">
         {isPageLoaded && filteredContents.length > 0 ? (
@@ -69,7 +68,6 @@ export default function MoviesPage() {
                 title={`${provider.providerName} Movies`} 
                 contents={provider.shows} 
                 theme={theme}
-                providerKey={provider.providerKey}
               />
               <div className="text-right">
                 <Link href={`/platform/${provider.providerName.toLowerCase().replace(" ", "-")}`} passHref>

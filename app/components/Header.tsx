@@ -2,12 +2,13 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { Filter, BookOpen, Menu } from "lucide-react"
+import { Filter, BookOpen, Menu, Home, Tv, Film } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { AIRecommendButton } from "./AIRecommendButton"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 
 interface HeaderProps {
   showFilter?: boolean
@@ -19,9 +20,25 @@ export default function Header({ showFilter = false, onFilterClick }: HeaderProp
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const handleFilterClick = () => {
-    setIsMenuOpen(false) // Close mobile menu when filter is clicked
+    setIsMenuOpen(false)
     onFilterClick?.()
   }
+
+  // Handle click outside to close menu
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      const isMenuButton = target.closest('[data-menu-button]');
+      const isMenuContent = target.closest('[data-menu-content]');
+      
+      if (!isMenuButton && !isMenuContent && isMenuOpen) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [isMenuOpen]);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background shadow-md">
@@ -87,31 +104,75 @@ export default function Header({ showFilter = false, onFilterClick }: HeaderProp
             </Link>
           </div>
           <div className="md:hidden">
-            <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-              <Menu className="h-6 w-6" />
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsMenuOpen(!isMenuOpen);
+              }}
+              data-menu-button
+              className="relative"
+            >
+              <motion.div
+                animate={{ rotate: isMenuOpen ? 90 : 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Menu className="h-6 w-6" />
+              </motion.div>
             </Button>
           </div>
         </div>
       </nav>
-      {isMenuOpen && (
-        <div className="md:hidden bg-background py-2">
-          <Link href="/" className="block px-4 py-2 hover:bg-secondary">
-            Home
-          </Link>
-          <Link href="/tv-shows" className="block px-4 py-2 hover:bg-secondary">
-            TV Shows
-          </Link>
-          <Link href="/movies" className="block px-4 py-2 hover:bg-secondary">
-            Movies
-          </Link>
-          <Link href="/blog" className="block px-4 py-2 hover:bg-secondary">
-            Blog
-          </Link>
-          <div className="px-4 py-2">
-            <AIRecommendButton className="w-full" />
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="md:hidden fixed inset-x-0 top-[4.5rem] bg-background/80 backdrop-blur-lg border-b border-border"
+            data-menu-content
+          >
+            <div className="px-4 py-3 space-y-3">
+              <Link 
+                href="/" 
+                className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-secondary transition-colors duration-200"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Home className="h-5 w-5 text-muted-foreground" />
+                <span className="font-medium">Home</span>
+              </Link>
+              <Link 
+                href="/tv-shows" 
+                className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-secondary transition-colors duration-200"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Tv className="h-5 w-5 text-muted-foreground" />
+                <span className="font-medium">TV Shows</span>
+              </Link>
+              <Link 
+                href="/movies" 
+                className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-secondary transition-colors duration-200"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Film className="h-5 w-5 text-muted-foreground" />
+                <span className="font-medium">Movies</span>
+              </Link>
+              <Link 
+                href="/blog" 
+                className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-secondary transition-colors duration-200"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <BookOpen className="h-5 w-5 text-muted-foreground" />
+                <span className="font-medium">Blog</span>
+              </Link>
+              <div className="pt-2 border-t border-border">
+                <AIRecommendButton className="w-full justify-center mt-2 bg-[#6D28D9] hover:bg-[#5B21B6] text-white" />
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   )
 }
