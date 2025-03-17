@@ -58,7 +58,7 @@ export function useOptimizedFetch(
 
         // No cache or stale cache, fetch new data
         setIsLoading(true)
-        const data = await fetchShows(showType, 10, apiFilters)
+        const data = await fetchShows(showType, 100, apiFilters)
         
         // Ensure unique show IDs by prefixing with provider key
         const processedData = data.map(provider => ({
