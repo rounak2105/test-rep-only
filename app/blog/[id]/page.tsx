@@ -16,16 +16,20 @@ export default function BlogPost() {
   const { theme } = useTheme()
   const [post, setPost] = useState<BlogPost | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(false)
   const { toast } = useToast()
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
+        setIsLoading(true)
+        setError(false)
         const data = await fetchBlogById(params.id as string)
         console.log('Blog content from API:', data.body);
         setPost(data)
       } catch (error) {
         console.error("Error fetching post:", error)
+        setError(true)
       } finally {
         setIsLoading(false)
       }
@@ -44,13 +48,48 @@ export default function BlogPost() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div className="min-h-screen bg-background">
+        <div className="max-w-4xl mx-auto px-4 py-12 md:py-16">
+          <div className="space-y-8">
+            {/* Author and metadata section skeleton */}
+            <div className="flex flex-wrap gap-4 items-center">
+              <div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+              <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+              <div className="h-4 w-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+            </div>
+
+            {/* Title section skeleton */}
+            <div className="space-y-4">
+              <div className="h-12 w-3/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+              <div className="h-12 w-1/2 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+            </div>
+
+            {/* Description section skeleton */}
+            <div className="space-y-2">
+              <div className="h-4 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+              <div className="h-4 w-5/6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+              <div className="h-4 w-4/6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+            </div>
+
+            {/* Featured image section skeleton */}
+            <div className="relative aspect-[16/9] w-full bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+
+            {/* Content section skeleton */}
+            <div className="space-y-4">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="space-y-2">
+                  <div className="h-4 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                  <div className="h-4 w-5/6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
 
-  if (!post) {
+  if (error || !post) {
     return <BlogNotFound />
   }
 

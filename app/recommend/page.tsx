@@ -28,8 +28,10 @@ export default function RecommendPage() {
     setError(null)
     try {
       const response = await generateAIRecommendations(query)
-      if (response?.data?.movies) {
-        setRecommendations(response.data.movies)
+      const movies = response?.data?.movies || response?.data
+      
+      if (movies && Array.isArray(movies) && movies.length > 0) {
+        setRecommendations(movies)
       } else {
         setError("No recommendations found. Please try a different query.")
       }
