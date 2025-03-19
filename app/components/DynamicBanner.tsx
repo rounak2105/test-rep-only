@@ -98,7 +98,7 @@ export default function DynamicBanner({ shows }: DynamicBannerProps) {
             <div className="flex items-center space-x-2 mb-2">
               <div className="flex items-center text-white text-sm">
                 <TrendingUp className="h-4 w-4 mr-1" />
-                <span>{currentShow.popularity.toFixed(1)}</span>
+                <span>{currentShow.popularity?.toFixed(1) || '0.0'}</span>
               </div>
             </div>
 
