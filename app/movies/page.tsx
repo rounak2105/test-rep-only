@@ -30,7 +30,7 @@ export default function MoviesPage() {
       const filtered = shows
         .map((provider) => ({
           ...provider,
-          shows: provider.shows.slice(0, 10),
+          shows: provider.shows.filter((show) => show.posterUrl !== null).slice(0, 10),
         }))
         .filter((provider) => provider.shows.length > 0)
       setFilteredContents(filtered)

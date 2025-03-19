@@ -59,22 +59,27 @@ export function useOptimizedFetch(
         // No cache or stale cache, fetch new data
         setIsLoading(true)
         const data = await fetchShows(showType, 100, apiFilters)
+
+        const uniqueIds = new Set();
         
-        // Ensure unique show IDs by prefixing with provider key
-        const processedData = data.map(provider => ({
+        const filteredData = data.map(provider => ({
           ...provider,
-          shows: provider.shows.map(show => ({
-            ...show,
-            id: `${provider.providerKey}-${show.id}` // Create unique ID by combining provider key and show ID
-          }))
-        }))
+          shows: provider.shows.filter(show => {
+            if (uniqueIds.has(show.id)) {
+              return false; // Duplicate found, exclude this show
+            } else {
+              uniqueIds.add(show.id);
+              return true; // Unique show, include it
+            }
+          })
+        }));
 
         if (!cachedShows) {
           cachedShows = { data: {}, timestamp: now }
         }
-        cachedShows.data[cacheKey] = processedData
+        cachedShows.data[cacheKey] = filteredData
         cachedShows.timestamp = now
-        setShows(processedData)
+        setShows(filteredData)
       } catch (err) {
         setError(err instanceof Error ? err : new Error("An error occurred while fetching data"))
       } finally {
