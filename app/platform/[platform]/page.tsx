@@ -280,7 +280,7 @@ export default function PlatformPage() {
         <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
         Back to Home
       </Button>
-      <div className="container mx-auto px-0.5 sm:px-4 py-8">
+      <div className="w-full sm:container mx-0 sm:mx-auto pt-16 px-1 md:px-8 pb-32">
         {shows.length > 0 ? (
           <>
             <DynamicBanner 
@@ -290,7 +290,7 @@ export default function PlatformPage() {
                 shows 
               }]} 
             />
-            <h1 className={`text-3xl font-bold ${theme === "dark" ? "text-white" : "text-black"} mt-8 mb-4 px-1`}>
+            <h1 className={`text-3xl font-bold ${theme === "dark" ? "text-white" : "text-black"} mt-8 mb-4 px-0`}>
               {platformName} Shows
             </h1>
             {showFilter && (
@@ -300,9 +300,11 @@ export default function PlatformPage() {
                 onClose={() => setShowFilter(false)}
               />
             )}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1 px-1">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-1.5 px-0 sm:gap-4 md:gap-6">
               {shows.map((show) => (
-                <ContentCard key={show.id} content={show} theme={theme} />
+                <div key={show.id} className="relative h-[280px] min-w-[187px] md:h-[420px] md:min-w-[280px]">
+                  <ContentCard content={show} theme={theme} />
+                </div>
               ))}
             </div>
             {/* Loading indicator */}
