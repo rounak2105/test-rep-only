@@ -264,14 +264,14 @@ export default function PlatformPage() {
       <Button
         onClick={() => router.push("/")}
         variant="ghost"
-        className={`fixed top-24 left-4 z-40 group font-medium hover:bg-transparent ${
+        className={`fixed top-24 left-1 z-40 group font-medium hover:bg-transparent ${
           theme === "dark" ? "text-gray-300 hover:text-white" : "text-gray-600 hover:text-black"
         } transition-colors duration-200`}
       >
         <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
         Back to Home
       </Button>
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-0.5 sm:px-4 py-8">
         {shows.length > 0 ? (
           <>
             <DynamicBanner 
@@ -281,7 +281,7 @@ export default function PlatformPage() {
                 shows 
               }]} 
             />
-            <h1 className={`text-3xl font-bold ${theme === "dark" ? "text-white" : "text-black"} mt-8 mb-4`}>
+            <h1 className={`text-3xl font-bold ${theme === "dark" ? "text-white" : "text-black"} mt-8 mb-4 px-1`}>
               {platformName} Shows
             </h1>
             {showFilter && (
@@ -291,7 +291,7 @@ export default function PlatformPage() {
                 onClose={() => setShowFilter(false)}
               />
             )}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1 px-1">
               {shows.map((show) => (
                 <ContentCard key={show.id} content={show} theme={theme} />
               ))}
@@ -333,7 +333,51 @@ export default function PlatformPage() {
         ) : isLoading ? (
           <LoadingSkeleton />
         ) : (
-          <div className="text-center text-foreground">No content available for {platformName}</div>
+          <div className="flex flex-col items-center justify-center min-h-[50vh] px-4 py-8 space-y-6">
+            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+              <svg
+                className="w-8 h-8 text-primary"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 20a8 8 0 100-16 8 8 0 000 16z"
+                />
+              </svg>
+            </div>
+            <div className="space-y-2 text-center">
+              <h3 className="text-2xl font-semibold text-foreground">No Shows Found</h3>
+              <p className="text-muted-foreground max-w-md text-base">
+                Oops! Looks like we couldn't find any shows matching your current filters on {platformName}. Try adjusting your selections to discover more content!
+              </p>
+            </div>
+            <Button
+              onClick={() => handleFilterChange({ genre: "all", language: "all", releaseDate: "all" })}
+              variant="outline"
+              className="group hover:bg-primary/10 transition-colors"
+            >
+              Reset Filters
+              <svg
+                className="ml-2 h-4 w-4 transition-transform group-hover:rotate-90"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
+              </svg>
+            </Button>
+          </div>
         )}
       </div>
     </div>

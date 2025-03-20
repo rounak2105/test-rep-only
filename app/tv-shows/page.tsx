@@ -83,11 +83,50 @@ export default function TVShowsPage() {
             </div>
           ))
         ) : isPageLoaded ? (
-          <div className="text-center text-foreground px-4 py-8">
-            <p className="text-lg">
-              Oops! Looks like the stars didn't align for this one. No shows match your filter—time to mix it up and try
-              a new combo. The spotlight's waiting, just not here... yet! 🎭✨
-            </p>
+          <div className="flex flex-col items-center justify-center min-h-[50vh] px-4 py-8 space-y-6">
+            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+              <svg
+                className="w-8 h-8 text-primary"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 20a8 8 0 100-16 8 8 0 000 16z"
+                />
+              </svg>
+            </div>
+            <div className="space-y-2 text-center">
+              <h3 className="text-2xl font-semibold text-foreground">No TV Shows Found</h3>
+              <p className="text-muted-foreground max-w-md text-base">
+                Oops! Looks like we couldn't find any TV shows matching your current filters. Try adjusting your selections to discover more content!
+              </p>
+            </div>
+            <Button
+              onClick={() => setFilters({ genre: "all", language: "all", releaseDate: "all" })}
+              variant="outline"
+              className="group hover:bg-primary/10 transition-colors"
+            >
+              Reset Filters
+              <svg
+                className="ml-2 h-4 w-4 transition-transform group-hover:rotate-90"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
+              </svg>
+            </Button>
           </div>
         ) : null}
       </div>
