@@ -11,6 +11,7 @@ import FilterMenu from "./components/FilterMenu"
 import DynamicBanner from "./components/DynamicBanner"
 import type { Provider } from "./lib/api"
 import { useOptimizedFetch } from "./hooks/useOptimizedFetch"
+import { useFilters } from "./context/FilterContext"
 
 const LoadingSkeleton = () => (
   <div className="w-full space-y-8">
@@ -51,16 +52,18 @@ const LoadingSkeleton = () => (
 )
 
 export default function Home() {
-  const { theme, toggleTheme } = useTheme()
-  const [filteredContents, setFilteredContents] = useState<Provider[]>([])
-  const [filters, setFilters] = useState({
-    genre: "all",
-    language: "all",
-    releaseDate: "all",
-  })
+  const { theme } = useTheme()
   const [showFilter, setShowFilter] = useState(false)
+  const { filters, setFilters } = useFilters()
+  const [filterVersion, setFilterVersion] = useState(0)
+  const [filteredContents, setFilteredContents] = useState<Provider[]>([])
   const { isLoading, error, shows } = useOptimizedFetch(undefined, filters)
   const [isPageLoaded, setIsPageLoaded] = useState(false)
+
+  // Reset filters when home page is mounted
+  useEffect(() => {
+    setFilters({ genre: "all", language: "all", releaseDate: "all" })
+  }, [])
 
   useEffect(() => {
     if (!isLoading) {
@@ -74,6 +77,11 @@ export default function Home() {
       setIsPageLoaded(true)
     }
   }, [isLoading, shows])
+
+  const handleFilterChange = (newFilters: typeof filters) => {
+    setFilters(newFilters)
+    setFilterVersion(prev => prev + 1)
+  }
 
   if (error) {
     return (
@@ -97,7 +105,7 @@ export default function Home() {
           {showFilter && (
             <FilterMenu
               filters={filters}
-              setFilters={setFilters}
+              setFilters={handleFilterChange}
               onClose={() => setShowFilter(false)}
             />
           )}

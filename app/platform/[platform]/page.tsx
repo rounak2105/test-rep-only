@@ -12,15 +12,12 @@ import { ArrowLeft } from "lucide-react"
 import LoadingSkeleton from "../../components/LoadingSkeleton"
 import { fetchShowsByProvider, Show, providerKeyMap, ShowsResponse } from "@/app/lib/api"
 import { getGenreIds, getLanguageCode } from "@/app/lib/utils"
+import { useFilters } from "../../context/FilterContext"
 
 export default function PlatformPage() {
   const { theme } = useTheme()
   const [showFilter, setShowFilter] = useState(false)
-  const [filters, setFilters] = useState({
-    genre: "all",
-    language: "all",
-    releaseDate: "all",
-  })
+  const { filters, setFilters } = useFilters()
   const [filterVersion, setFilterVersion] = useState(0)
   const params = useParams()
   const router = useRouter()
