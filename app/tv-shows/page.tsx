@@ -54,6 +54,12 @@ export default function TVShowsPage() {
       <Header
         showFilter={true}
         onFilterClick={() => setShowFilter(!showFilter)}
+        hasActiveFilters={filters.genre !== "all" || filters.language !== "all" || filters.releaseDate !== "all"}
+        onResetFilters={() => {
+          setFilters({ genre: "all", language: "all", releaseDate: "all" });
+          setFilterVersion(prev => prev + 1);
+          setShowFilter(false);
+        }}
       />
       {isLoading ? (
         <LoadingSkeleton />
@@ -81,6 +87,7 @@ export default function TVShowsPage() {
                       <Link
                         href={`/platform/${provider.providerName.toLowerCase().replace(/\s+/g, "")}`}
                         passHref
+                        onClick={() => setFilters({ ...filters, showType: "tv" })}
                       >
                         <Button
                           variant="ghost"

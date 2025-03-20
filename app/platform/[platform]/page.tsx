@@ -92,6 +92,7 @@ export default function PlatformPage() {
       try {
         console.log('Loading shows for platform:', platform)
         console.log('Current offset:', 0)
+        console.log('Show type:', filters.showType)
         
         const normalizedPlatform = platform.toLowerCase()
         console.log('Normalized platform name:', normalizedPlatform)
@@ -101,6 +102,11 @@ export default function PlatformPage() {
           limit: 100,
           offset: 0,
           watchProviders: [providerKeyMap[normalizedPlatform as keyof typeof providerKeyMap]]
+        }
+
+        // Add showType if it exists
+        if (filters.showType) {
+          filterParams.showType = filters.showType
         }
 
         // Only add filter parameters if they are not 'all'
@@ -152,7 +158,7 @@ export default function PlatformPage() {
     
     // Load initial shows
     loadShows()
-  }, [params.platform, filterVersion])
+  }, [params.platform, filterVersion, filters.showType])
 
   // Set up intersection observer for infinite scrolling
   useEffect(() => {
@@ -257,6 +263,12 @@ export default function PlatformPage() {
       <Header
         showFilter={true}
         onFilterClick={() => setShowFilter(!showFilter)}
+        hasActiveFilters={filters.genre !== "all" || filters.language !== "all" || filters.releaseDate !== "all"}
+        onResetFilters={() => {
+          setFilters({ genre: "all", language: "all", releaseDate: "all" });
+          setFilterVersion(prev => prev + 1);
+          setShowFilter(false);
+        }}
       />
       <Button
         onClick={() => router.push("/")}

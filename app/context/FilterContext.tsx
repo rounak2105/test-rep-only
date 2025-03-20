@@ -6,6 +6,7 @@ type Filters = {
   genre: string
   language: string
   releaseDate: string
+  showType?: "tv" | "movie" | null
 }
 
 type FilterContextType = {
@@ -20,6 +21,7 @@ export function FilterProvider({ children }: { children: ReactNode }) {
     genre: "all",
     language: "all",
     releaseDate: "all",
+    showType: null,
   })
 
   return (
