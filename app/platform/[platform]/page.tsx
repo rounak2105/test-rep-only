@@ -67,15 +67,23 @@ export default function PlatformPage() {
   const [totalCount, setTotalCount] = useState(0)
   const observerRef = useRef<HTMLDivElement>(null)
   const observer = useRef<IntersectionObserver | null>(null)
+  const currentPlatformRef = useRef<string | null>(null)
 
   // Initial load and platform change handler
   useEffect(() => {
-    console.log('Platform changed:', params.platform)
+    const platform = params.platform as string
+    console.log('Platform changed:', platform)
+    
+    // Skip if this is the same platform
+    if (currentPlatformRef.current === platform) {
+      return
+    }
+    
+    currentPlatformRef.current = platform
     
     const loadShows = async () => {
       setIsLoading(true)
       try {
-        const platform = params.platform as string
         console.log('Loading shows for platform:', platform)
         console.log('Current offset:', 0)
         
