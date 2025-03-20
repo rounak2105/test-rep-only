@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: "WhatToBinge? Your Next Obsession Starts Here",
   description: "Discover your next favorite movies and TV shows with What To Binge. Get personalized recommendations, explore trending content, and find the best entertainment across all major streaming platforms.",
   icons: {
-    icon: "/favicon.svg",
+    icon: "/favicon.ico",
   },
   openGraph: {
     title: "WhatToBinge? Your Next Obsession Starts Here",

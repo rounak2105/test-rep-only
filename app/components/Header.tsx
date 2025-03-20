@@ -190,7 +190,7 @@ export default function Header({
             exit={{ opacity: 0, y: 20 }}
             className="fixed bottom-6 inset-x-0 z-50 flex justify-center px-4"
           >
-            <div className="bg-[#6D28D9] text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-3 w-fit">
+            <div className="bg-[#A259FF] text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-3 w-fit">
               <span className="text-sm font-medium whitespace-nowrap">Filters on, magic unlocked!</span>
               <Button
                 variant="ghost"

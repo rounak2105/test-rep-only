@@ -27,11 +27,15 @@ export default function FilterMenu({ filters, setFilters, onClose }: FilterMenuP
     language: Object.values(languageMap),
   }
 
+  const priorityLanguages = ['English', 'Hindi', 'Korean', 'Japanese'];
+  const otherLanguages = options.language.filter(lang => !priorityLanguages.includes(lang));
+  const sortedLanguages = [...priorityLanguages, ...otherLanguages.sort()];
+
   const filteredGenres = options.genre.filter(genre => 
     genre.toLowerCase().includes(genreSearch.toLowerCase())
   )
 
-  const filteredLanguages = options.language.filter(language => 
+  const filteredLanguages = sortedLanguages.filter(language => 
     language.toLowerCase().includes(languageSearch.toLowerCase())
   )
 
@@ -149,7 +153,7 @@ export default function FilterMenu({ filters, setFilters, onClose }: FilterMenuP
           <div className="pt-4 space-y-3">
             <Button
               onClick={handleApplyFilters}
-              className="w-full h-12 bg-primary hover:bg-primary/90 text-white rounded-xl transition-colors flex items-center justify-center space-x-2"
+              className="w-full h-12 bg-[#A259FF] hover:bg-[#A259FF]/90 text-white rounded-xl transition-colors flex items-center justify-center space-x-2"
             >
               <Check className="h-5 w-5" />
               <span>Apply Filters</span>
