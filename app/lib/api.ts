@@ -85,6 +85,24 @@ export interface Filters {
   language: string
 }
 
+// Provider key mapping for converting platform names to API keys
+export const providerKeyMap = {
+  'netflix': 8,
+  'amazonprimevideo': 119,
+  'hotstar': 122,
+  'jiocinema': 220,
+  'zee5': 232,
+  'sonyliv': 237,
+  'mxplayer': 515,
+  'amazonminitv': 1898,
+  'watchmore': 0,
+} as const;
+
+export interface ShowsResponse {
+  shows: Show[]
+  totalCount: number
+}
+
 export const fetchShows = async (
   showType?: "tv" | "movie",
   limit = 100,
@@ -139,6 +157,48 @@ export const generateAIRecommendations = async (query: string): Promise<AIRespon
     return response.data
   } catch (error) {
     console.error("Error generating AI recommendations:", error)
+    throw error
+  }
+}
+
+interface FilterParams {
+  limit: number;
+  offset: number;
+  watchProviders: number[];
+  genreIds?: number[];
+  originalLanguage?: string;
+  releaseDate?: string;
+}
+
+export async function fetchShowsByProvider(
+  provider: string,
+  limit: number = 100,
+  offset: number = 0,
+  filterParams?: FilterParams
+): Promise<ShowsResponse> {
+  try {
+    const providerKey = providerKeyMap[provider as keyof typeof providerKeyMap]
+    console.log('Fetching shows for provider:', provider)
+    console.log('Provider key:', providerKey)
+
+    const params = filterParams || {
+      limit,
+      offset,
+      watchProviders: [providerKey]
+    }
+
+    const response = await axios.post(`${API_BASE_URL}/show/all`, params)
+    console.log('API Response:', response.data)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching shows:', error)
+    if (axios.isAxiosError(error)) {
+      console.error('Axios error details:', {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message
+      })
+    }
     throw error
   }
 }
