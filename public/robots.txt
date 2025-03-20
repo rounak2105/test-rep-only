@@ -1,0 +1,18 @@
+# Allow all web crawlers
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://whattobinge.com/sitemap.xml
+
+# Individual pages
+Allow: /tv-shows
+Allow: /movies
+Allow: /blog
+Allow: /blog/*
+Allow: /about
+Allow: /privacy
+Allow: /feedback
+
+# Crawl-delay
+Crawl-delay: 10 
