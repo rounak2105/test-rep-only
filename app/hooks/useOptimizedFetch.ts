@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { fetchShows, type Provider } from "../lib/api"
 import { getGenreIds, getLanguageCode } from "../lib/utils"
 
@@ -25,8 +25,20 @@ export function useOptimizedFetch(
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
   const [shows, setShows] = useState<Provider[]>([])
+  const currentShowTypeRef = useRef<string | null>(null)
+  const currentFiltersRef = useRef<string | null>(null)
 
   useEffect(() => {
+    const currentFiltersString = JSON.stringify(filters)
+    
+    // Skip if both showType and filters are the same
+    if (currentShowTypeRef.current === showType && currentFiltersRef.current === currentFiltersString) {
+      return
+    }
+    
+    currentShowTypeRef.current = showType || null
+    currentFiltersRef.current = currentFiltersString
+
     const fetchData = async () => {
       try {
         const apiFilters: { originalLanguage?: string; genreIds?: number[] } = {}
@@ -60,19 +72,19 @@ export function useOptimizedFetch(
         setIsLoading(true)
         const data = await fetchShows(showType, 100, apiFilters)
 
-        const uniqueIds = new Set();
+        const uniqueIds = new Set()
         
         const filteredData = data.map(provider => ({
           ...provider,
           shows: provider.shows.filter(show => {
             if (uniqueIds.has(show.id)) {
-              return false; // Duplicate found, exclude this show
+              return false // Duplicate found, exclude this show
             } else {
-              uniqueIds.add(show.id);
-              return true; // Unique show, include it
+              uniqueIds.add(show.id)
+              return true // Unique show, include it
             }
           })
-        }));
+        }))
 
         if (!cachedShows) {
           cachedShows = { data: {}, timestamp: now }
