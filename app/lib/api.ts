@@ -161,37 +161,45 @@ export const generateAIRecommendations = async (query: string): Promise<AIRespon
   }
 }
 
-export const fetchShowsByProvider = async (
-  providerName: string,
-  limit = 100,
-  offset = 0
-): Promise<ShowsResponse> => {
+interface FilterParams {
+  limit: number;
+  offset: number;
+  watchProviders: number[];
+  genreIds?: number[];
+  originalLanguage?: string;
+  releaseDate?: string;
+}
+
+export async function fetchShowsByProvider(
+  provider: string,
+  limit: number = 100,
+  offset: number = 0,
+  filterParams?: FilterParams
+): Promise<ShowsResponse> {
   try {
-    // Convert provider name to lowercase for consistency
-    const normalizedProviderName = providerName.toLowerCase();
-    const providerKey = providerKeyMap[normalizedProviderName as keyof typeof providerKeyMap] || 0;
-    
-    console.log('Fetching shows for provider:', normalizedProviderName);
-    console.log('Provider key:', providerKey);
-    
-    const response = await axios.post(`${API_BASE_URL}/show/all`, {
+    const providerKey = providerKeyMap[provider as keyof typeof providerKeyMap]
+    console.log('Fetching shows for provider:', provider)
+    console.log('Provider key:', providerKey)
+
+    const params = filterParams || {
       limit,
-      watchProviders: [providerKey],
-      offset
-    });
-    
-    console.log('API Response:', response.data);
-    return response.data;
+      offset,
+      watchProviders: [providerKey]
+    }
+
+    const response = await axios.post(`${API_BASE_URL}/show/all`, params)
+    console.log('API Response:', response.data)
+    return response.data
   } catch (error) {
-    console.error("Error fetching shows by provider:", error);
+    console.error('Error fetching shows:', error)
     if (axios.isAxiosError(error)) {
       console.error('Axios error details:', {
         status: error.response?.status,
         data: error.response?.data,
         message: error.message
-      });
+      })
     }
-    return { shows: [], totalCount: 0 };
+    throw error
   }
 }
 

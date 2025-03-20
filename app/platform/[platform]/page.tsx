@@ -11,6 +11,7 @@ import DynamicBanner from "../../components/DynamicBanner"
 import { ArrowLeft } from "lucide-react"
 import LoadingSkeleton from "../../components/LoadingSkeleton"
 import { fetchShowsByProvider, Show, providerKeyMap, ShowsResponse } from "@/app/lib/api"
+import { getGenreIds, getLanguageCode } from "@/app/lib/utils"
 
 export default function PlatformPage() {
   const { theme } = useTheme()
@@ -20,6 +21,7 @@ export default function PlatformPage() {
     language: "all",
     releaseDate: "all",
   })
+  const [filterVersion, setFilterVersion] = useState(0)
   const params = useParams()
   const router = useRouter()
   const platformName = (() => {
@@ -69,13 +71,20 @@ export default function PlatformPage() {
   const observer = useRef<IntersectionObserver | null>(null)
   const currentPlatformRef = useRef<string | null>(null)
 
-  // Initial load and platform change handler
+  // Handle filter changes
+  const handleFilterChange = (newFilters: typeof filters) => {
+    setFilters(newFilters)
+    setFilterVersion(prev => prev + 1)
+    setShowFilter(false)
+  }
+
+  // Initial load and platform/filter change handler
   useEffect(() => {
     const platform = params.platform as string
-    console.log('Platform changed:', platform)
+    console.log('Platform or filters changed:', platform, filters)
     
-    // Skip if this is the same platform
-    if (currentPlatformRef.current === platform) {
+    // Skip if this is the same platform and no filter change
+    if (currentPlatformRef.current === platform && filterVersion === 0) {
       return
     }
     
@@ -90,7 +99,31 @@ export default function PlatformPage() {
         const normalizedPlatform = platform.toLowerCase()
         console.log('Normalized platform name:', normalizedPlatform)
         
-        const response = await fetchShowsByProvider(normalizedPlatform, 100, 0)
+        // Prepare filter parameters
+        const filterParams: any = {
+          limit: 100,
+          offset: 0,
+          watchProviders: [providerKeyMap[normalizedPlatform as keyof typeof providerKeyMap]]
+        }
+
+        // Only add filter parameters if they are not 'all'
+        if (filters.genre !== 'all') {
+          const genreIds = getGenreIds(filters.genre)
+          if (genreIds.length > 0) {
+            filterParams.genreIds = genreIds
+          }
+        }
+
+        if (filters.language !== 'all') {
+          filterParams.originalLanguage = getLanguageCode(filters.language)
+        }
+
+        if (filters.releaseDate !== 'all') {
+          filterParams.releaseDate = filters.releaseDate
+        }
+        
+        console.log('Filter params:', filterParams)
+        const response = await fetchShowsByProvider(normalizedPlatform, 100, 0, filterParams)
         console.log('API Response:', response)
         
         if (!response || !response.shows || response.shows.length === 0) {
@@ -113,7 +146,7 @@ export default function PlatformPage() {
       }
     }
 
-    // Reset state when platform changes
+    // Reset state when platform or filters change
     setShows([])
     setOffset(0)
     setHasMore(true)
@@ -122,7 +155,7 @@ export default function PlatformPage() {
     
     // Load initial shows
     loadShows()
-  }, [params.platform])
+  }, [params.platform, filterVersion])
 
   // Set up intersection observer for infinite scrolling
   useEffect(() => {
@@ -152,7 +185,31 @@ export default function PlatformPage() {
         console.log('Total count:', totalCount)
         
         const normalizedPlatform = platform.toLowerCase()
-        const response = await fetchShowsByProvider(normalizedPlatform, 100, offset)
+        
+        // Prepare filter parameters
+        const filterParams: any = {
+          limit: 100,
+          offset: offset,
+          watchProviders: [providerKeyMap[normalizedPlatform as keyof typeof providerKeyMap]]
+        }
+
+        // Only add filter parameters if they are not 'all'
+        if (filters.genre !== 'all') {
+          const genreIds = getGenreIds(filters.genre)
+          if (genreIds.length > 0) {
+            filterParams.genreIds = genreIds
+          }
+        }
+
+        if (filters.language !== 'all') {
+          filterParams.originalLanguage = getLanguageCode(filters.language)
+        }
+
+        if (filters.releaseDate !== 'all') {
+          filterParams.releaseDate = filters.releaseDate
+        }
+        
+        const response = await fetchShowsByProvider(normalizedPlatform, 100, offset, filterParams)
         
         if (!response || !response.shows || response.shows.length === 0) {
           console.log('No more shows received')
@@ -188,7 +245,7 @@ export default function PlatformPage() {
         observer.current.disconnect()
       }
     }
-  }, [offset, hasMore, isLoading, params.platform, totalCount])
+  }, [offset, hasMore, isLoading, params.platform, totalCount, filters])
 
   if (error) {
     return (
@@ -230,7 +287,7 @@ export default function PlatformPage() {
             {showFilter && (
               <FilterMenu
                 filters={filters}
-                setFilters={setFilters}
+                setFilters={handleFilterChange}
                 onClose={() => setShowFilter(false)}
               />
             )}
