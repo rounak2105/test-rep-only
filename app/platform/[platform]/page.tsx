@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useParams, useRouter } from "next/navigation"
 import ContentCard from "../../components/ContentCard"
 import { Button } from "@/components/ui/button"
@@ -9,8 +9,8 @@ import Header from "../../components/Header"
 import FilterMenu from "../../components/FilterMenu"
 import DynamicBanner from "../../components/DynamicBanner"
 import { ArrowLeft } from "lucide-react"
-import { useOptimizedFetch } from "../../hooks/useOptimizedFetch"
 import LoadingSkeleton from "../../components/LoadingSkeleton"
+import { fetchShowsByProvider, Show, providerKeyMap, ShowsResponse } from "@/app/lib/api"
 
 export default function PlatformPage() {
   const { theme } = useTheme()
@@ -22,27 +22,172 @@ export default function PlatformPage() {
   })
   const params = useParams()
   const router = useRouter()
-  const platformName = (params.platform as string)
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ")
+  const platformName = (() => {
+    const normalizedKey = (params.platform as string).toLowerCase()
+    const providerKey = providerKeyMap[normalizedKey as keyof typeof providerKeyMap]
+    if (providerKey) {
+      switch (normalizedKey) {
+        case 'netflix':
+          return 'Netflix'
+        case 'amazonprimevideo':
+          return 'Prime Video'
+        case 'hotstar':
+          return 'Disney+ Hotstar'
+        case 'jiocinema':
+          return 'JioCinema'
+        case 'zee5':
+          return 'ZEE5'
+        case 'sonyliv':
+          return 'SonyLIV'
+        case 'mxplayer':
+          return 'MX Player'
+        case 'amazonminitv':
+          return 'Amazon MiniTV'
+        case 'watchmore':
+          return 'Watch More'
+        default:
+          return (params.platform as string)
+            .split("-")
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(" ")
+      }
+    }
+    return (params.platform as string)
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ")
+  })()
 
-  const { isLoading, error, shows } = useOptimizedFetch(undefined, filters)
+  // State for shows, loading, error, and pagination
+  const [shows, setShows] = useState<Show[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [hasMore, setHasMore] = useState(true)
+  const [offset, setOffset] = useState(0)
+  const [totalCount, setTotalCount] = useState(0)
+  const observerRef = useRef<HTMLDivElement>(null)
+  const observer = useRef<IntersectionObserver | null>(null)
 
-  // Normalize the platform name for comparison
-  const normalizedPlatform = (params.platform as string).toLowerCase()
+  // Initial load and platform change handler
+  useEffect(() => {
+    console.log('Platform changed:', params.platform)
+    
+    const loadShows = async () => {
+      setIsLoading(true)
+      try {
+        const platform = params.platform as string
+        console.log('Loading shows for platform:', platform)
+        console.log('Current offset:', 0)
+        
+        const normalizedPlatform = platform.toLowerCase()
+        console.log('Normalized platform name:', normalizedPlatform)
+        
+        const response = await fetchShowsByProvider(normalizedPlatform, 100, 0)
+        console.log('API Response:', response)
+        
+        if (!response || !response.shows || response.shows.length === 0) {
+          console.log('No shows received')
+          setHasMore(false)
+          setIsLoading(false)
+          return
+        }
 
-  const provider = shows.find((p) => {
-    const normalizedProviderName = p.providerName.toLowerCase().replace(/\s+/g, "")
-    return normalizedProviderName === normalizedPlatform
-  })
+        console.log(`Received ${response.shows.length} shows`)
+        console.log('Total count:', response.totalCount)
+        setShows(response.shows)
+        setTotalCount(response.totalCount)
+        setOffset(1) // Set to 1 for next page
+        setIsLoading(false)
+      } catch (err) {
+        console.error('Error loading shows:', err)
+        setError("Failed to load shows. Please try again later.")
+        setIsLoading(false)
+      }
+    }
 
-  if (isLoading) {
-    return <LoadingSkeleton />
-  }
+    // Reset state when platform changes
+    setShows([])
+    setOffset(0)
+    setHasMore(true)
+    setError(null)
+    setTotalCount(0)
+    
+    // Load initial shows
+    loadShows()
+  }, [params.platform])
+
+  // Set up intersection observer for infinite scrolling
+  useEffect(() => {
+    const options = {
+      root: null,
+      rootMargin: "20px",
+      threshold: 0.1,
+    }
+
+    const loadMoreShows = async () => {
+      if (!hasMore || isLoading) return
+
+      // Check if we've reached the total count
+      const currentTotal = offset * 100 // Calculate based on offset only
+      if (currentTotal >= totalCount) {
+        console.log('Reached total count:', totalCount)
+        setHasMore(false)
+        return
+      }
+
+      setIsLoading(true)
+      try {
+        const platform = params.platform as string
+        console.log('Loading more shows for platform:', platform)
+        console.log('Current offset:', offset)
+        console.log('Current total:', currentTotal)
+        console.log('Total count:', totalCount)
+        
+        const normalizedPlatform = platform.toLowerCase()
+        const response = await fetchShowsByProvider(normalizedPlatform, 100, offset)
+        
+        if (!response || !response.shows || response.shows.length === 0) {
+          console.log('No more shows received')
+          setHasMore(false)
+          setIsLoading(false)
+          return
+        }
+
+        console.log(`Received ${response.shows.length} more shows`)
+        setShows(prev => [...prev, ...response.shows])
+        setOffset(prev => prev + 1) // Increment by 1 for next page
+        setIsLoading(false)
+      } catch (err) {
+        console.error('Error loading more shows:', err)
+        setError("Failed to load more shows. Please try again later.")
+        setIsLoading(false)
+      }
+    }
+
+    observer.current = new IntersectionObserver((entries) => {
+      const target = entries[0]
+      if (target.isIntersecting && hasMore && !isLoading) {
+        loadMoreShows()
+      }
+    }, options)
+
+    if (observerRef.current) {
+      observer.current.observe(observerRef.current)
+    }
+
+    return () => {
+      if (observer.current) {
+        observer.current.disconnect()
+      }
+    }
+  }, [offset, hasMore, isLoading, params.platform, totalCount])
 
   if (error) {
-    return <div className="min-h-screen flex items-center justify-center text-red-500">Error: {error.message}</div>
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-500">
+        Error: {error}
+      </div>
+    )
   }
 
   return (
@@ -62,11 +207,17 @@ export default function PlatformPage() {
         Back to Home
       </Button>
       <div className="container mx-auto px-4 py-8">
-        {provider ? (
+        {shows.length > 0 ? (
           <>
-            <DynamicBanner shows={[provider]} />
+            <DynamicBanner 
+              shows={[{ 
+                providerName: platformName, 
+                providerKey: providerKeyMap[(params.platform as string).toLowerCase() as keyof typeof providerKeyMap] || 0,
+                shows 
+              }]} 
+            />
             <h1 className={`text-3xl font-bold ${theme === "dark" ? "text-white" : "text-black"} mt-8 mb-4`}>
-              {provider.providerName} Shows
+              {platformName} Shows
             </h1>
             {showFilter && (
               <FilterMenu
@@ -76,11 +227,46 @@ export default function PlatformPage() {
               />
             )}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {provider.shows.map((show) => (
+              {shows.map((show) => (
                 <ContentCard key={show.id} content={show} theme={theme} />
               ))}
             </div>
+            {/* Loading indicator */}
+            {isLoading && (
+              <div className="flex justify-center items-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              </div>
+            )}
+            {/* End of content indicator */}
+            {!hasMore && shows.length > 0 && (
+              <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                  <svg
+                    className="w-8 h-8 text-primary"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-foreground">You've reached the end!</h3>
+                <p className="text-muted-foreground text-center max-w-md">
+                  You've seen all {totalCount} shows available on {platformName}. Check back later for more content!
+                </p>
+              </div>
+            )}
+            {/* Intersection observer target */}
+            <div ref={observerRef} className="h-10" />
           </>
+        ) : isLoading ? (
+          <LoadingSkeleton />
         ) : (
           <div className="text-center text-foreground">No content available for {platformName}</div>
         )}
