@@ -81,7 +81,7 @@ export default function DynamicBanner({ shows }: DynamicBannerProps) {
         >
           <Image
             src={
-              currentShow.backdrop_path ||
+              (currentShow.backdrop_path ? currentShow.backdrop_path.replace('/original/', '/w780/') : null) ||
               currentShow.posterUrl ||
               "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-ai-brush-removebg-efek2otq%20(2)-xxLu4tq489nclUJ4RXPzTcv3os4nOi.png"
             }
