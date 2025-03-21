@@ -191,15 +191,20 @@ export default function Header({
             exit={{ opacity: 0, y: 20 }}
             className="fixed bottom-6 inset-x-0 z-50 flex justify-center px-4"
           >
-            <div className="bg-[#A259FF] text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-3 w-fit">
-              <span className="text-sm font-medium whitespace-nowrap">Filters on, magic unlocked!</span>
+            <div className="bg-[#A259FF] text-white px-5 py-2.5 rounded-full shadow-lg flex items-center gap-3 backdrop-blur-sm border border-white/20">
+              <div className="flex items-center gap-2">
+                <Filter className="h-4 w-4 text-white/90" />
+                <span className="text-sm font-medium whitespace-nowrap">Filters Applied</span>
+              </div>
+              <div className="h-4 w-[1px] bg-white/20" />
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-6 w-6 p-0 hover:bg-white/10 flex items-center justify-center"
+                className="h-7 hover:bg-white/10 flex items-center gap-1.5 rounded-full px-2 text-xs font-medium"
                 onClick={onResetFilters}
               >
-                <X className="h-4 w-4" />
+                Clear
+                <X className="h-3.5 w-3.5" />
               </Button>
             </div>
           </motion.div>
