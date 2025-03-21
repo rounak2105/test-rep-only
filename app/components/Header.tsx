@@ -53,13 +53,14 @@ export default function Header({
         <nav className="container mx-auto px-4 h-20 flex items-center justify-between">
           <div className="flex items-center space-x-8">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="relative w-32 h-20">
+              <div className="relative w-32 sm:w-32 h-14 sm:h-20">
                 <Image
                   src="/whattobinge.png"
                   alt="What To Binge Logo"
                   fill
-                  className="object-contain"
+                  className="object-contain object-left"
                   priority
+                  sizes="(max-width: 640px) 128px, 128px"
                 />
               </div>
             </Link>
