@@ -81,7 +81,7 @@ export default function DynamicBanner({ shows }: DynamicBannerProps) {
         >
           <Image
             src={
-              currentShow.backdrop_path ||
+              (currentShow.backdrop_path ? currentShow.backdrop_path.replace('/original/', '/w780/') : null) ||
               currentShow.posterUrl ||
               "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-ai-brush-removebg-efek2otq%20(2)-xxLu4tq489nclUJ4RXPzTcv3os4nOi.png"
             }
@@ -95,36 +95,37 @@ export default function DynamicBanner({ shows }: DynamicBannerProps) {
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
 
           <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12 space-y-3">
-            <div className="flex items-center space-x-2 mb-2">
-              <div className="flex items-center text-white text-sm">
-                <TrendingUp className="h-4 w-4 mr-1" />
-                <span>{currentShow.popularity?.toFixed(1) || '0.0'}</span>
+            <div className="flex items-center space-x-3 mb-2">
+              <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm">
+                <TrendingUp className="h-4 w-4 mr-1.5" />
+                <span className="font-medium">{currentShow.popularity?.toFixed(1) || '0.0'}</span>
+              </div>
+              <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/20 backdrop-blur-sm text-primary-foreground text-sm">
+                <span className="font-medium">{currentShow.providerName}</span>
               </div>
             </div>
 
             <h1 className="text-3xl md:text-5xl font-bold text-white max-w-2xl drop-shadow-lg">{currentShow.title}</h1>
 
             <div className="space-y-1">
-              <div className="flex items-center text-sm text-white/90 space-x-3">
-                <div className="flex items-center space-x-1">
-                  <Globe2 className="h-4 w-4" />
-                  <span className="capitalize">{languageName}</span>
+              <div className="flex flex-wrap items-center text-sm text-white/90 gap-3">
+                <div className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-white/10 backdrop-blur-sm space-x-1.5">
+                  <Globe2 className="h-3.5 w-3.5" />
+                  <span className="capitalize font-medium">{languageName}</span>
                 </div>
-                <span>•</span>
-                <div className="flex items-center space-x-1">
+                <div className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-white/10 backdrop-blur-sm space-x-1.5">
                   {currentShow.showType === "movie" ? (
-                    <Film className="h-4 w-4" />
+                    <Film className="h-3.5 w-3.5" />
                   ) : (
-                    <Tv2 className="h-4 w-4" />
+                    <Tv2 className="h-3.5 w-3.5" />
                   )}
-                  <span className="capitalize">{currentShow.showType === "movie" ? "Movie" : "TV"}</span>
+                  <span className="capitalize font-medium">{currentShow.showType === "movie" ? "Movie" : "TV"}</span>
                 </div>
-                <span>•</span>
-                <span>{currentShow.providerName}</span>
-              </div>
-              <div className="text-sm text-white/80">
-                {isReleased ? "Released on " : "Coming on "}
-                {formattedDate}
+                <div className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-white/10 backdrop-blur-sm">
+                  <span className="font-medium">
+                    {isReleased ? "Released " : "Coming "}{formattedDate}
+                  </span>
+                </div>
               </div>
             </div>
 
