@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import Image from "next/image"
+import { submitFeedback } from "@/app/lib/api"
 
 const feedbackTypes = [
   {
@@ -54,24 +55,8 @@ export default function FeedbackPage() {
       message: formData.get("message") as string,
     }
 
-    // For demo purposes, simulating successful submission
     try {
-      // Replace with actual API endpoint when available
-      // const response = await fetch("https://api.whattobinge.com/feedback", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(data),
-      // })
-      
-      // if (!response.ok) {
-      //   throw new Error("Failed to submit feedback")
-      // }
-
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      
+      await submitFeedback(data)
       setSubmitted(true)
     } catch (error) {
       console.error("Error submitting feedback:", error)

@@ -204,3 +204,20 @@ export async function fetchShowsByProvider(
   }
 }
 
+interface FeedbackData {
+  name: string;
+  email: string;
+  feedbackType: string;
+  message: string;
+}
+
+export const submitFeedback = async (data: FeedbackData): Promise<any> => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/feedback`, data)
+    return response.data;
+  } catch (error) {
+    console.error('Error submitting feedback:', error);
+    throw error;
+  }
+}
+
