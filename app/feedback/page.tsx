@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import Image from "next/image"
 
 const feedbackTypes = [
   {
@@ -53,19 +54,24 @@ export default function FeedbackPage() {
       message: formData.get("message") as string,
     }
 
+    // For demo purposes, simulating successful submission
     try {
-      const response = await fetch("https://bingeit-backend.onrender.com/feedback", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      })
+      // Replace with actual API endpoint when available
+      // const response = await fetch("https://api.whattobinge.com/feedback", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(data),
+      // })
+      
+      // if (!response.ok) {
+      //   throw new Error("Failed to submit feedback")
+      // }
 
-      if (!response.ok) {
-        throw new Error("Failed to submit feedback")
-      }
-
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1500))
+      
       setSubmitted(true)
     } catch (error) {
       console.error("Error submitting feedback:", error)
@@ -85,18 +91,19 @@ export default function FeedbackPage() {
             className="max-w-md mx-auto text-center"
           >
             <div className="bg-card border border-border rounded-lg p-6">
-              <div className="w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <MessageSquare className="w-8 h-8 text-primary" />
+              <div className="w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <MessageSquare className="w-8 h-8 text-[#A259FF]" />
               </div>
               <h2 className="text-xl font-semibold text-foreground mb-2">Thank You!</h2>
-              <p className="text-sm text-muted-foreground mb-6">
-                We appreciate your feedback. We'll review it and use it to improve our service.
+              <p className="text-sm text-muted-foreground mb-4">
+                We appreciate your feedback to <span className="inline-flex items-center align-middle mx-0"><Image src="/whattobinge.png" alt="WhatToBinge Logo" width={100} height={25} className="object-contain" /></span>. We'll review it and use it to improve our service.
               </p>
               <Button 
                 onClick={() => setSubmitted(false)} 
                 size="sm"
-                className="bg-primary text-primary-foreground hover:bg-primary/90"
+                className="bg-[#A259FF] text-white hover:bg-[#A259FF]/90 flex items-center gap-2"
               >
+                <Sparkles className="h-4 w-4" />
                 Send Another Feedback
               </Button>
             </div>
@@ -117,14 +124,14 @@ export default function FeedbackPage() {
           className="max-w-2xl mx-auto"
         >
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-              <Mail className="w-8 h-8 text-primary" />
+            <div className="w-16 h-16 flex items-center justify-center mx-auto mb-4">
+              <Mail className="w-8 h-8 text-[#A259FF]" />
             </div>
-            <h1 className="text-3xl font-bold text-foreground mb-3">
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
               We'd Love to Hear From You
             </h1>
             <p className="text-base text-muted-foreground">
-              Your feedback helps us improve and provide a better experience for everyone.
+              Your feedback helps <span className="inline-flex items-center align-middle mx-0"><Image src="/whattobinge.png" alt="WhatToBinge Logo" width={100} height={25} className="object-contain" /></span> improve and provide a better experience for everyone.
             </p>
           </div>
 
@@ -133,7 +140,7 @@ export default function FeedbackPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="bg-card border border-border rounded-lg p-6 space-y-5"
+            className="bg-card border border-border hover:border-[#A259FF]/30 transition-colors rounded-lg p-6 space-y-5"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1.5">
@@ -145,7 +152,7 @@ export default function FeedbackPage() {
                   id="name" 
                   placeholder="Your name" 
                   required 
-                  className="bg-background border-accent/50 focus:border-primary h-9" 
+                  className="bg-background border-accent/50 focus:border-[#A259FF] h-9" 
                 />
               </div>
               <div className="space-y-1.5">
@@ -158,7 +165,7 @@ export default function FeedbackPage() {
                   type="email"
                   placeholder="your@email.com"
                   required
-                  className="bg-background border-accent/50 focus:border-primary h-9"
+                  className="bg-background border-accent/50 focus:border-[#A259FF] h-9"
                 />
               </div>
             </div>
@@ -166,12 +173,12 @@ export default function FeedbackPage() {
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-foreground">Feedback Type</label>
               <Select name="feedbackType" defaultValue="general">
-                <SelectTrigger className="bg-background border-accent/50 focus:border-primary h-9">
+                <SelectTrigger className="bg-background border-accent/50 focus:border-[#A259FF] h-9">
                   <SelectValue placeholder="Select feedback type" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-background border-accent/50">
                   {feedbackTypes.map((type) => (
-                    <SelectItem key={type.value} value={type.value}>
+                    <SelectItem key={type.value} value={type.value} className="focus:bg-[#A259FF]/10 focus:text-[#A259FF]">
                       <div className="flex items-center gap-2">
                         <type.icon className="w-4 h-4" />
                         <span>{type.label}</span>
@@ -191,18 +198,25 @@ export default function FeedbackPage() {
                 id="message"
                 placeholder="Tell us what you think..."
                 required
-                className="bg-background border-accent/50 focus:border-primary min-h-[120px]"
+                className="bg-background border-accent/50 focus:border-[#A259FF] min-h-[120px]"
               />
             </div>
 
             <Button
               type="submit"
               size="sm"
-              className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+              className="w-full bg-[#A259FF] text-white hover:bg-[#A259FF]/90"
               disabled={isSubmitting}
             >
               {isSubmitting ? (
-                "Sending..."
+                <>
+                  <motion.div 
+                    className="mr-2 h-4 w-4 rounded-full border-2 border-t-transparent border-white"
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  />
+                  Sending...
+                </>
               ) : (
                 <>
                   Send Feedback
