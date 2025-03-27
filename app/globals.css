@@ -2,10 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Move non-critical CSS to a separate file */
+:root {
+  --background: 222 17% 7%;
+  --foreground: 0 0% 90%;
+  --card: 222 17% 7%;
+  --card-foreground: 0 0% 90%;
+  --popover: 222 17% 7%;
+  --popover-foreground: 0 0% 90%;
+  --primary: 215 13% 47%;
+  --primary-foreground: 0 0% 90%;
+  --secondary: 215 13% 47%;
+  --secondary-foreground: 0 0% 90%;
+  --muted: 215 13% 47%;
+  --muted-foreground: 0 0% 70%;
+  --accent: 215 13% 47%;
+  --accent-foreground: 0 0% 90%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 90%;
+  --border: 215 13% 47%;
+  --input: 215 13% 47%;
+  --ring: 215 13% 47%;
+  --ai-button: 265 100% 67%;
+}
+
 @layer base {
   * {
     @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
 
@@ -20,7 +45,6 @@
   }
 }
 
-/* Footer styles - consider moving to a separate component CSS file */
 .footer {
   background-color: #0d1117;
   color: white;
