@@ -13,6 +13,7 @@ import LoadingSkeleton from "../../components/LoadingSkeleton"
 import { fetchShowsByProvider, Show, providerKeyMap, ShowsResponse } from "@/app/lib/api"
 import { getGenreIds, getLanguageCode } from "@/app/lib/utils"
 import { useFilters } from "../../context/FilterContext"
+import QuickFilters from "../../components/QuickFilters"
 
 export default function PlatformPage() {
   const { theme } = useTheme()
@@ -271,7 +272,10 @@ export default function PlatformPage() {
         }}
       />
       <Button
-        onClick={() => router.push("/")}
+        onClick={() => {
+          setFilters({ genre: "all", language: "all", releaseDate: "all" });
+          router.push("/");
+        }}
         variant="ghost"
         className={`fixed top-24 left-1 z-40 group font-medium hover:bg-transparent ${
           theme === "dark" ? "text-gray-300 hover:text-white" : "text-gray-600 hover:text-black"
@@ -300,6 +304,10 @@ export default function PlatformPage() {
                 onClose={() => setShowFilter(false)}
               />
             )}
+            
+            {/* Quick Filters */}
+            <QuickFilters onFilterChange={() => setFilterVersion(prev => prev + 1)} />
+            
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 px-0.5 sm:gap-4 md:gap-6">
               {shows
                 .filter(show => show.posterUrl !== null)

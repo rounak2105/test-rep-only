@@ -36,7 +36,11 @@ const quickFilters: QuickFilter[] = [
   { name: "Documentary", type: "genre", value: "Documentary" },
 ]
 
-export default function QuickFilters() {
+interface QuickFiltersProps {
+  onFilterChange?: () => void;
+}
+
+export default function QuickFilters({ onFilterChange }: QuickFiltersProps) {
   const { filters, setFilters } = useFilters()
   const [mounted, setMounted] = useState(false)
 
@@ -45,7 +49,6 @@ export default function QuickFilters() {
   }, [])
 
   const handleFilterClick = (filter: QuickFilter) => {
-
     setFilters((prev) => {
       const isSame =
         (filter.type === "language" && prev.language === filter.value) ||
@@ -82,6 +85,8 @@ export default function QuickFilters() {
         return prev
       }
     })
+    // Call onFilterChange after updating filters
+    onFilterChange?.()
   }
 
   const isActive = (filter: QuickFilter): boolean => {

@@ -13,6 +13,7 @@ import DynamicBanner from "../components/DynamicBanner"
 import { useOptimizedFetch } from "../hooks/useOptimizedFetch"
 import LoadingSkeleton from "../components/LoadingSkeleton"
 import { useFilters } from "../context/FilterContext"
+import QuickFilters from "../components/QuickFilters"
 
 export default function TVShowsPage() {
   const { theme } = useTheme()
@@ -73,6 +74,10 @@ export default function TVShowsPage() {
               onClose={() => setShowFilter(false)}
             />
           )}
+          
+          {/* Quick Filters */}
+          <QuickFilters />
+          
           <div className="space-y-12 pt-8">
             {isPageLoaded && filteredContents.length > 0 ? (
               filteredContents.map((provider) => (
