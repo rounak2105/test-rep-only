@@ -1,10 +1,11 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Shield, Lock, Eye, Server, Mail, FileText } from "lucide-react"
+import { Shield, Lock, Eye, Server, Mail, FileText, Sparkles, ArrowRight } from "lucide-react"
 import Header from "../components/Header"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import Image from "next/image"
 
 const sections = [
   {
@@ -17,7 +18,7 @@ const sections = [
     icon: Lock,
     title: "How We Use Your Information",
     content:
-      "We use the information we collect to provide, maintain, and improve our services, to develop new features, and to protect BingeIt and our users.",
+      "We use the information we collect to provide, maintain, and improve our services, to develop new features, and to protect our users.",
   },
   {
     icon: Eye,
@@ -45,14 +46,14 @@ export default function PrivacyPolicyPage() {
           className="max-w-3xl mx-auto"
         >
           <div className="text-center mb-12">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-              <FileText className="w-8 h-8 text-primary" />
+            <div className="w-16 h-16 flex items-center justify-center mx-auto mb-4">
+              <FileText className="w-8 h-8 text-[#A259FF]" />
             </div>
-            <h1 className="text-3xl font-bold text-foreground mb-4">
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
               Privacy Policy
             </h1>
             <p className="text-base text-muted-foreground max-w-2xl mx-auto">
-              At BingeIt, we take your privacy seriously. This Privacy Policy outlines how we collect, use, and protect
+              At <span className="inline-flex items-center align-middle mx-0"><Image src="/whattobinge.png" alt="WhatToBinge Logo" width={100} height={25} className="object-contain" /></span>, we take your privacy seriously. This Privacy Policy outlines how we collect, use, and protect
               your personal information.
             </p>
           </div>
@@ -64,11 +65,11 @@ export default function PrivacyPolicyPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-card border border-border rounded-lg p-6 hover:border-primary/50 transition-colors group"
+                className="bg-card border border-border rounded-lg p-6 hover:border-[#A259FF]/50 transition-colors group"
               >
                 <div className="flex items-start space-x-4">
-                  <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                    <section.icon className="w-5 h-5 text-primary" />
+                  <div className="w-10 h-10 flex items-center justify-center">
+                    <section.icon className="w-5 h-5 text-[#A259FF]" />
                   </div>
                   <div>
                     <h2 className="text-lg font-semibold text-foreground mb-2">{section.title}</h2>
@@ -85,22 +86,20 @@ export default function PrivacyPolicyPage() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="mt-12 bg-card border border-border rounded-lg p-6 text-center"
           >
-            <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-              <Mail className="w-6 h-6 text-primary" />
+            <div className="w-12 h-12 flex items-center justify-center mx-auto mb-4">
+              <Mail className="w-6 h-6 text-[#A259FF]" />
             </div>
-            <h2 className="text-lg font-semibold text-foreground mb-2">Have Questions?</h2>
+            <h3 className="text-lg font-semibold text-foreground mb-2">Need Help?</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              For any questions or concerns about our privacy practices, please don't hesitate to reach out.
+              If you have any questions about our Privacy Policy, please contact our support team.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Button variant="outline" size="sm" className="group">
-                <Mail className="mr-2 h-4 w-4" />
-                Contact Support
-              </Button>
-              <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                Read Terms of Service
-              </Button>
-            </div>
+            <Link
+              href="mailto:hello@whattobinge.com"
+              className="inline-flex items-center gap-2 text-sm font-medium text-[#A259FF] hover:text-[#A259FF]/90 transition-colors"
+            >
+              Contact Support
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </motion.div>
         </motion.div>
       </div>

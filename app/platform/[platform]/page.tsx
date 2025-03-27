@@ -13,6 +13,7 @@ import LoadingSkeleton from "../../components/LoadingSkeleton"
 import { fetchShowsByProvider, Show, providerKeyMap, ShowsResponse } from "@/app/lib/api"
 import { getGenreIds, getLanguageCode } from "@/app/lib/utils"
 import { useFilters } from "../../context/FilterContext"
+import QuickFilters from "../../components/QuickFilters"
 
 export default function PlatformPage() {
   const { theme } = useTheme()
@@ -271,7 +272,10 @@ export default function PlatformPage() {
         }}
       />
       <Button
-        onClick={() => router.push("/")}
+        onClick={() => {
+          setFilters({ genre: "all", language: "all", releaseDate: "all" });
+          router.push("/");
+        }}
         variant="ghost"
         className={`fixed top-24 left-1 z-40 group font-medium hover:bg-transparent ${
           theme === "dark" ? "text-gray-300 hover:text-white" : "text-gray-600 hover:text-black"
@@ -280,9 +284,13 @@ export default function PlatformPage() {
         <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
         Back to Home
       </Button>
-      <div className="w-full sm:container mx-0 sm:mx-auto pt-16 px-1 md:px-8 pb-32">
+      <div className="w-full pt-16 pb-32">
         {shows.length > 0 ? (
           <>
+            <h1 className={`text-3xl font-bold ${theme === "dark" ? "text-white" : "text-black"} mb-4 px-0`}>
+              {platformName} Shows
+            </h1>
+
             <DynamicBanner 
               shows={[{ 
                 providerName: platformName, 
@@ -290,9 +298,10 @@ export default function PlatformPage() {
                 shows 
               }]} 
             />
-            <h1 className={`text-3xl font-bold ${theme === "dark" ? "text-white" : "text-black"} mt-8 mb-4 px-0`}>
-              {platformName} Shows
-            </h1>
+            
+            {/* Quick Filters */}
+            <QuickFilters onFilterChange={() => setFilterVersion(prev => prev + 1)} noPadding />
+            
             {showFilter && (
               <FilterMenu
                 filters={filters}
@@ -300,7 +309,8 @@ export default function PlatformPage() {
                 onClose={() => setShowFilter(false)}
               />
             )}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 px-0.5 sm:gap-4 md:gap-6">
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-4 md:gap-6">
               {shows
                 .filter(show => show.posterUrl !== null)
                 .map((show) => (

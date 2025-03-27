@@ -28,18 +28,18 @@ export default function Footer() {
     >
       <div className="container mx-auto px-4">
         <div className="flex flex-wrap justify-center gap-8 mb-6 text-sm">
-          <a href="/privacy" className="text-blue-400 hover:text-blue-300 transition-colors hover:scale-105">
+          <a href="/privacy" className="text-[#A259FF] hover:text-[#A259FF]/80 transition-colors hover:scale-105">
             Terms & Privacy Policy
           </a>
-          <a href="/feedback" className="text-blue-400 hover:text-blue-300 transition-colors hover:scale-105">
+          <a href="/feedback" className="text-[#A259FF] hover:text-[#A259FF]/80 transition-colors hover:scale-105">
             Send us feedback
           </a>
-          <a href="/about" className="text-blue-400 hover:text-blue-300 transition-colors hover:scale-105">
+          <a href="/about" className="text-[#A259FF] hover:text-[#A259FF]/80 transition-colors hover:scale-105">
             About
           </a>
         </div>
         <div className="text-center text-sm text-muted-foreground">
-          © {currentYear}, BingeIt Entertainment or its affiliates
+          © {currentYear}, WhatToBinge Entertainment or its affiliates
         </div>
       </div>
     </footer>

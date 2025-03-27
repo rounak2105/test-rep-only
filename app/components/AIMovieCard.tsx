@@ -1,59 +1,62 @@
 "use client"
 
+import type React from "react"
+import Image from "next/image"
 import { motion } from "framer-motion"
-import { Star, Calendar, Film, Globe2 } from "lucide-react"
+import { Play, Film, Globe2, TrendingUp } from "lucide-react"
 import type { AIMovie } from "../lib/api"
-import { languageMap } from "../lib/utils"
+import { getLanguageName } from "../lib/utils"
+import { Button } from "@/components/ui/button"
 
 interface AIMovieCardProps {
   movie: AIMovie
+  theme: "dark" | "light"
+  onClick?: () => void
 }
 
-export default function AIMovieCard({ movie }: AIMovieCardProps) {
-  const formattedDate = new Date(movie.releaseDate).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  })
+export default function AIMovieCard({ movie, theme, onClick }: AIMovieCardProps) {
+  if (!movie.poster_url) return null;
 
-  const languageName = languageMap[movie.language.toLowerCase()] || movie.language
+  const languageName = getLanguageName(movie.special_attribruite.split(', ')[2])
 
   return (
     <motion.div
-      className="bg-background rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200 hover:border-primary/40 hover:bg-background/60 backdrop-blur-md"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      className="relative h-[280px] min-w-[187px] cursor-pointer transition duration-200 ease-out md:h-[420px] md:min-w-[280px] group rounded-lg overflow-hidden shadow-md"
       whileHover={{ scale: 1.05 }}
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3 }}
+      onClick={onClick}
     >
-      <div className="p-4 space-y-3">
-        <div className="space-y-1">
-          <h3 className="text-xl font-semibold text-primary line-clamp-2">{movie.title}</h3>
-          <div className="flex flex-wrap items-center gap-3 text-xs text-muted">
-            <div className="flex items-center bg-primary/20 px-2 py-0.5 rounded-full">
-              <Star className="w-3 h-3 text-yellow-400 mr-1 fill-current" />
-              <span className="font-medium">{movie.imdbRating.toFixed(1)}</span>
-            </div>
-            <div className="flex items-center">
-              <Calendar className="w-3 h-3 mr-1" />
-              <span>{formattedDate}</span>
-            </div>
-            <div className="flex items-center">
-              <Globe2 className="w-3 h-3 mr-1" />
-              <span>{languageName}</span>
-            </div>
+      <Image
+        src={`https://image.tmdb.org/t/p/w500${movie.poster_url}`}
+        alt={movie.title}
+        fill
+        className="object-cover"
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background opacity-100" />
+      <div className="absolute bottom-0 left-0 right-0 p-4 transform transition-transform duration-200 group-hover:translate-y-[-10px]">
+        <div className="text-sm font-medium text-primary-foreground mb-1">{movie.release_year}</div>
+        <h3 className="text-sm font-semibold text-foreground md:text-base line-clamp-1">{movie.title}</h3>
+        <div className="flex items-center space-x-2 text-xs text-muted-foreground mt-1">
+          <div className="flex items-center">
+            <Globe2 className="h-3 w-3 mr-1" />
+            <span className="capitalize">{languageName}</span>
           </div>
-        </div>
-
-        <p className="text-muted line-clamp-3 text-xs leading-relaxed">{movie.description}</p>
-
-        <div className="pt-3 flex items-center justify-between border-t border-gray-100">
-          <div className="flex items-center text-xs">
-            <Film className="w-3 h-3 mr-1 text-primary" />
-            <span className="text-primary font-medium capitalize">{movie.showType === "tv" ? "TV" : "Movie"}</span>
+          <span>•</span>
+          <div className="flex items-center">
+            <Film className="h-3 w-3 mr-1" />
+            <span className="capitalize">Movie</span>
           </div>
-          <div className="px-2 py-0.5 rounded-full bg-primary/20 text-primary text-xs font-medium">
-            {movie.ottPlatform}
-          </div>
+          {movie.vote_average > 0 && (
+            <>
+              <span>•</span>
+              <div className="flex items-center">
+                <TrendingUp className="h-3 w-3 mr-1 text-primary" />
+                <span>{(movie.vote_average * 10).toFixed(1)}</span>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </motion.div>

@@ -51,14 +51,15 @@ export interface BlogPost {
 }
 
 export interface AIMovie {
+  backdrop_path: string | null
+  genres: string
   id: number
+  overview: string
+  poster_url: string
+  release_year: string
+  special_attribruite: string
   title: string
-  releaseDate: string
-  description: string
-  language: string
-  showType: string
-  ottPlatform: string
-  imdbRating: number
+  vote_average: number
 }
 
 export interface AIResponse {
@@ -200,6 +201,23 @@ export async function fetchShowsByProvider(
       })
     }
     throw error
+  }
+}
+
+interface FeedbackData {
+  name: string;
+  email: string;
+  feedbackType: string;
+  message: string;
+}
+
+export const submitFeedback = async (data: FeedbackData): Promise<any> => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/feedback`, data)
+    return response.data;
+  } catch (error) {
+    console.error('Error submitting feedback:', error);
+    throw error;
   }
 }
 

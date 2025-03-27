@@ -12,6 +12,7 @@ import DynamicBanner from "./components/DynamicBanner"
 import type { Provider } from "./lib/api"
 import { useOptimizedFetch } from "./hooks/useOptimizedFetch"
 import { useFilters } from "./context/FilterContext"
+import QuickFilters from "./components/QuickFilters"
 
 const LoadingSkeleton = () => (
   <div className="w-full space-y-8">
@@ -115,6 +116,10 @@ export default function Home() {
               onClose={() => setShowFilter(false)}
             />
           )}
+          
+          {/* Quick Filters */}
+          <QuickFilters />
+          
           <div className="space-y-12 pt-8">
             {isPageLoaded && filteredContents.length > 0 ? (
               filteredContents.map((provider) => (
