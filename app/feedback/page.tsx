@@ -67,33 +67,30 @@ export default function FeedbackPage() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <Header />
-        <div className="container mx-auto px-4 py-12">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="max-w-md mx-auto text-center"
-          >
-            <div className="bg-card border border-border rounded-lg p-6">
-              <div className="w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <MessageSquare className="w-8 h-8 text-[#A259FF]" />
-              </div>
-              <h2 className="text-xl font-semibold text-foreground mb-2">Thank You!</h2>
-              <p className="text-sm text-muted-foreground mb-4">
-                We appreciate your feedback to <span className="inline-flex items-center align-middle mx-0"><Image src="/whattobinge.png" alt="WhatToBinge Logo" width={100} height={25} className="object-contain" /></span>. We'll review it and use it to improve our service.
-              </p>
-              <Button 
-                onClick={() => setSubmitted(false)} 
-                size="sm"
-                className="bg-[#A259FF] text-white hover:bg-[#A259FF]/90 flex items-center gap-2"
-              >
-                <Sparkles className="h-4 w-4" />
-                Send Another Feedback
-              </Button>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="w-full max-w-md mx-auto px-4 -mt-20"
+        >
+          <div className="bg-card rounded-lg p-6 shadow-lg">
+            <div className="w-12 h-12 flex items-center justify-center mx-auto mb-4 bg-[#A259FF]/10 rounded-full">
+              <MessageSquare className="w-6 h-6 text-[#A259FF]" />
             </div>
-          </motion.div>
-        </div>
+            <h2 className="text-xl font-semibold text-foreground mb-3 text-center">Thank You!</h2>
+            <p className="text-base text-muted-foreground mb-4 text-center">
+              We appreciate your feedback to <span className="inline-flex items-center align-middle mx-1"><Image src="/whattobinge.png" alt="WhatToBinge Logo" width={100} height={25} className="object-contain" /></span>. We'll review it and use it to improve our service.
+            </p>
+            <Button 
+              onClick={() => setSubmitted(false)} 
+              className="w-full bg-[#A259FF] text-white hover:bg-[#A259FF]/90 flex items-center justify-center gap-2"
+            >
+              <Sparkles className="h-4 w-4" />
+              Send Another Feedback
+            </Button>
+          </div>
+        </motion.div>
       </div>
     )
   }
@@ -101,18 +98,18 @@ export default function FeedbackPage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="max-w-2xl mx-auto"
         >
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 flex items-center justify-center mx-auto mb-4">
-              <Mail className="w-8 h-8 text-[#A259FF]" />
+          <div className="text-center mb-6">
+            <div className="w-12 h-12 flex items-center justify-center mx-auto mb-3">
+              <Mail className="w-6 h-6 text-[#A259FF]" />
             </div>
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
               We'd Love to Hear From You
             </h1>
             <p className="text-base text-muted-foreground">
