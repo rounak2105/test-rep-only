@@ -310,12 +310,14 @@ export default function PlatformPage() {
               />
             )}
             
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 md:gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 md:gap-4 px-4 place-items-center">
               {shows
                 .filter(show => show.posterUrl !== null)
                 .map((show) => (
-                  <div key={show.id} className="w-[187px] sm:w-[240px] lg:w-[280px]">
-                    <ContentCard content={show} theme={theme} />
+                  <div key={show.id} className="w-full flex items-center justify-center">
+                    <div className="w-[187px] sm:w-[240px] lg:w-[280px]">
+                      <ContentCard content={show} theme={theme} />
+                    </div>
                   </div>
               ))}
             </div>
