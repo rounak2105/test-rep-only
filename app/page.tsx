@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import Link from "next/link"
 import ContentRow from "./components/ContentRow"
 import { Button } from "@/components/ui/button"
@@ -66,6 +66,7 @@ export default function Home() {
     setFilters({ genre: "all", language: "all", releaseDate: "all" })
   }, [])
 
+  // Memoize filtered content to reduce recalculations
   useEffect(() => {
     if (!isLoading) {
       const filtered = shows
@@ -79,10 +80,18 @@ export default function Home() {
     }
   }, [isLoading, shows])
 
-  const handleFilterChange = (newFilters: typeof filters) => {
+  // Memoize filter change handler
+  const handleFilterChange = useMemo(() => (newFilters: typeof filters) => {
     setFilters(newFilters)
     setFilterVersion(prev => prev + 1)
-  }
+  }, [])
+
+  // Memoize reset filters handler
+  const handleResetFilters = useMemo(() => () => {
+    setFilters({ genre: "all", language: "all", releaseDate: "all" })
+    setFilterVersion(prev => prev + 1)
+    setShowFilter(false)
+  }, [])
 
   if (error) {
     return (
@@ -98,11 +107,7 @@ export default function Home() {
         showFilter={true}
         onFilterClick={() => setShowFilter(!showFilter)}
         hasActiveFilters={filters.genre !== "all" || filters.language !== "all" || filters.releaseDate !== "all"}
-        onResetFilters={() => {
-          setFilters({ genre: "all", language: "all", releaseDate: "all" });
-          setFilterVersion(prev => prev + 1);
-          setShowFilter(false);
-        }}
+        onResetFilters={handleResetFilters}
       />
       {isLoading ? (
         <LoadingSkeleton />
@@ -117,35 +122,32 @@ export default function Home() {
             />
           )}
           
-          {/* Quick Filters */}
           <QuickFilters />
           
-          <div className="space-y-12 pt-8">
+          <div className="min-h-[200px] space-y-12 pt-8">
             {isPageLoaded && filteredContents.length > 0 ? (
               filteredContents.map((provider) => (
-                <div key={`provider-${provider.providerKey}`} className="space-y-4">
-                  <div className="px-4">
-                    <ContentRow 
-                      title={provider.providerName} 
-                      contents={provider.shows} 
-                      theme={theme}
-                    />
-                    <div className="text-right mt-4">
-                      <Link
-                        href={`/platform/${provider.providerName.toLowerCase().replace(/\s+/g, "")}`}
-                        passHref
+                <div key={`provider-${provider.providerKey}`} className="px-4">
+                  <ContentRow 
+                    title={provider.providerName} 
+                    contents={provider.shows} 
+                    theme={theme}
+                  />
+                  <div className="text-right mt-4">
+                    <Link
+                      href={`/platform/${provider.providerName.toLowerCase().replace(/\s+/g, "")}`}
+                      passHref
+                    >
+                      <Button
+                        variant="ghost"
+                        className={`group font-medium hover:bg-transparent ${
+                          theme === "dark" ? "text-gray-300 hover:text-white" : "text-gray-600 hover:text-black"
+                        } transition-colors duration-200`}
                       >
-                        <Button
-                          variant="ghost"
-                          className={`group font-medium hover:bg-transparent ${
-                            theme === "dark" ? "text-gray-300 hover:text-white" : "text-gray-600 hover:text-black"
-                          } transition-colors duration-200`}
-                        >
-                          Show All
-                          <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-2" />
-                        </Button>
-                      </Link>
-                    </div>
+                        Show All
+                        <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-2" />
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               ))
@@ -174,7 +176,7 @@ export default function Home() {
                   </p>
                 </div>
                 <Button
-                  onClick={() => setFilters({ genre: "all", language: "all", releaseDate: "all" })}
+                  onClick={handleResetFilters}
                   variant="outline"
                   className="group hover:bg-primary/10 transition-colors"
                 >
