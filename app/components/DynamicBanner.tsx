@@ -11,9 +11,8 @@ interface DynamicBannerProps {
   shows: Provider[]
 }
 
-interface FeaturedShow extends Omit<Show, 'backdrop_path'> {
+interface FeaturedShow extends Show {
   providerName: string
-  backdrop_path: string | null
 }
 
 export default function DynamicBanner({ shows }: DynamicBannerProps) {
@@ -28,8 +27,6 @@ export default function DynamicBanner({ shows }: DynamicBannerProps) {
           provider.shows.map((show) => ({
             ...show,
             providerName: provider.providerName,
-            // Pre-transform the backdrop URL
-            backdrop_path: show.backdrop_path ? show.backdrop_path.replace('/original/', '/w780/') : null
           }))
         )
 
@@ -47,19 +44,6 @@ export default function DynamicBanner({ shows }: DynamicBannerProps) {
 
     loadFeaturedShows()
   }, [shows])
-
-  // Preload next image
-  useEffect(() => {
-    if (featuredShows.length === 0) return
-
-    const nextIndex = (currentIndex + 1) % featuredShows.length
-    const nextShow = featuredShows[nextIndex]
-    
-    if (nextShow?.backdrop_path) {
-      const img = new window.Image()
-      img.src = nextShow.backdrop_path
-    }
-  }, [currentIndex, featuredShows])
 
   useEffect(() => {
     if (featuredShows.length === 0) return
@@ -96,14 +80,16 @@ export default function DynamicBanner({ shows }: DynamicBannerProps) {
           className="absolute inset-0"
         >
           <Image
-            src={currentShow.backdrop_path || currentShow.posterUrl || "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-ai-brush-removebg-efek2otq%20(2)-xxLu4tq489nclUJ4RXPzTcv3os4nOi.png"}
+            src={
+              (currentShow.backdrop_path ? currentShow.backdrop_path.replace('/original/', '/w780/') : null) ||
+              currentShow.posterUrl ||
+              "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-ai-brush-removebg-efek2otq%20(2)-xxLu4tq489nclUJ4RXPzTcv3os4nOi.png"
+            }
             alt={currentShow.title}
             fill
             className="object-cover object-[center_25%]"
-            priority={currentIndex === 0}
-            quality={75}
-            sizes="100vw"
-            loading={currentIndex === 0 ? "eager" : "lazy"}
+            priority
+            quality={90}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-background via-background/70 to-background/50" />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
