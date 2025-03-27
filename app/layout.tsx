@@ -66,7 +66,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <FilterProvider>
           <Header />
-          <main className="flex-grow pt-16 px-1 md:px-8 pb-32">{children}</main>
+          <main className="flex-grow pt-16 px-1 sm:px-2 lg:px-8 pb-32">{children}</main>
           <Footer />
         </FilterProvider>
       </body>
