@@ -5,7 +5,24 @@ import Header from "./components/Header"
 import Footer from "./components/Footer"
 import { FilterProvider } from "./context/FilterContext"
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ 
+  subsets: ["latin"],
+  display: 'swap',
+  preload: true,
+  adjustFontFallback: true
+})
+
+// Critical CSS for initial render
+const criticalCSS = `
+  :root {
+    --background: 222 17% 7%;
+    --foreground: 0 0% 90%;
+  }
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+`
 
 export const metadata: Metadata = {
   title: "WhatToBinge? Your Next Obsession Starts Here",
@@ -62,6 +79,12 @@ export default function RootLayout({
         <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
         <link rel="manifest" href="/favicon/site.webmanifest" />
+        <style dangerouslySetInnerHTML={{ __html: criticalCSS }} />
+        <link 
+          rel="preload" 
+          href="/_next/static/css/app/layout.css" 
+          as="style"
+        />
       </head>
       <body className={inter.className}>
         <FilterProvider>
