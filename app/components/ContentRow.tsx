@@ -66,12 +66,10 @@ export default function ContentRow({ title, contents, theme }: ContentRowProps) 
 
         <div
           ref={rowRef}
-          className="flex items-center space-x-2.5 overflow-x-scroll scrollbar-hide md:space-x-4 md:p-4 min-h-[200px]"
+          className="flex items-center space-x-2.5 overflow-x-scroll scrollbar-hide md:space-x-4 md:p-4"
         >
           {contents.map((content) => (
-            <div key={content.id} className="flex-shrink-0 w-[200px] md:w-[300px]">
-              <ContentCard content={content} theme={theme} />
-            </div>
+            <ContentCard key={content.id} content={content} theme={theme} />
           ))}
         </div>
 
