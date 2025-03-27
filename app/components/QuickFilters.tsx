@@ -38,9 +38,10 @@ const quickFilters: QuickFilter[] = [
 
 interface QuickFiltersProps {
   onFilterChange?: () => void;
+  noPadding?: boolean;
 }
 
-export default function QuickFilters({ onFilterChange }: QuickFiltersProps) {
+export default function QuickFilters({ onFilterChange, noPadding }: QuickFiltersProps) {
   const { filters, setFilters } = useFilters()
   const [mounted, setMounted] = useState(false)
 
@@ -102,7 +103,7 @@ export default function QuickFilters({ onFilterChange }: QuickFiltersProps) {
     <div className="relative w-full py-4 overflow-hidden">
       <div className="absolute -inset-1 bg-gradient-to-r from-[#A259FF]/5 via-[#A259FF]/0 to-[#A259FF]/5 z-0 blur-3xl opacity-70" />
       
-      <div className="px-4 z-10 relative">
+      <div className={`z-10 relative ${noPadding ? '' : 'px-4'}`}>
         <div className="flex items-center mb-4">
           <div className="bg-[#A259FF] text-white rounded-full px-4 py-1 text-sm font-medium">
             Quick Filters

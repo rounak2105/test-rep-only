@@ -18,7 +18,7 @@ export default function ContentCard({ content, theme }: ContentCardProps) {
   if (!content.posterUrl) return null;
 
   const date = new Date(content.releaseDate)
-  const formattedDate = `${date.getDate()} ${date.toLocaleString("default", { month: "short" })}`
+  const formattedDate = `${date.getDate()} ${date.toLocaleString("default", { month: "short" })} ${date.getFullYear()}`
   const languageName = getLanguageName(content.originalLanguage)
 
   const handleTrailerClick = (e: React.MouseEvent<HTMLButtonElement>, trailerLink: string) => {
