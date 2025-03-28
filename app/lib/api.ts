@@ -92,6 +92,7 @@ export const providerKeyMap = {
   'amazonprimevideo': 119,
   'hotstar': 122,
   'jiocinema': 220,
+  'jiohotstar': 2336,
   'zee5': 232,
   'sonyliv': 237,
   'mxplayer': 515,
