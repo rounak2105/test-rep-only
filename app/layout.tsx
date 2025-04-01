@@ -5,6 +5,7 @@ import Header from "./components/Header"
 import Footer from "./components/Footer"
 import { FilterProvider } from "./context/FilterContext"
 import Analytics from "./components/Analytics"
+import WelcomePopup from "./components/WelcomePopup"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -67,6 +68,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Analytics />
         <FilterProvider>
+          <WelcomePopup />
           <Header />
           <main className="flex-grow pt-16 px-1 sm:px-2 lg:px-8 pb-32">{children}</main>
           <Footer />
