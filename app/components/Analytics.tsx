@@ -3,7 +3,7 @@
 import Script from 'next/script'
 
 export default function Analytics() {
-  const trackingId = process.env.GOOGLE_ANALYTICS_ID
+  const trackingId = process.env.GOOGLE_ANALYTICS_ID || 'G-ZBESZNY2X0'
 
   return (
     <Script id="minimal-analytics" strategy="afterInteractive">
