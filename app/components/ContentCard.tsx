@@ -26,8 +26,8 @@ export default function ContentCard({ content, theme }: ContentCardProps) {
     window.open(trailerLink, "_blank")
   }
 
-  const handleSearchClick = (e: React.MouseEvent<HTMLButtonElement>, content: Show) => {
-    e.stopPropagation() // Prevent card click event from firing
+  const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation() // Prevent any nested click handling
     if (content.homepage) {
       window.open(content.homepage, "_blank")
     } else {
@@ -35,9 +35,9 @@ export default function ContentCard({ content, theme }: ContentCardProps) {
       if (content.watchProviders) {
         const providerMap = new Map(
           Object.entries(providerKeyMap).map(([provider, id]) => [id, provider])
-        );
+        )
         const providerId = content.watchProviders[0]
-        providerName = providerMap.get(providerId as 0 | 8 | 119 | 122 | 220 | 2336 | 232 | 237 | 515 | 1898) || "null"
+        providerName = providerMap.get(providerId as 0 | 8 | 119 | 122 | 220 | 2336 | 232 | 237 | 515 | 1898) || ""
       }
       const query = encodeURIComponent(`${content.title} ${providerName} ${date.getFullYear()}`)
       window.open(`https://www.google.com/search?q=${query}`, "_blank")
@@ -46,22 +46,13 @@ export default function ContentCard({ content, theme }: ContentCardProps) {
 
   return (
     <motion.div
+      onClick={handleCardClick}
       className="relative h-[280px] min-w-[187px] cursor-pointer transition duration-200 ease-out md:h-[420px] md:min-w-[280px] group rounded-lg overflow-hidden shadow-md"
       whileHover={{ scale: 1.05 }}
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3 }}
     >
-      {(content.homepage || content.watchProviders) && (
-        <Button
-          onClick={(e) => handleSearchClick(e, content)}
-          className="absolute top-2 left-2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full w-10 h-10 p-0"
-          size="icon"
-        >
-          <Search className="h-5 w-5" />
-          <span className="sr-only">Open Search</span>
-        </Button>
-      )}
       {content.trailerLink && (
         <Button
           onClick={(e) => handleTrailerClick(e, content.trailerLink!)}
