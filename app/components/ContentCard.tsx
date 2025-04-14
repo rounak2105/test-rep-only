@@ -39,7 +39,7 @@ export default function ContentCard({ content, theme }: ContentCardProps) {
         const providerId = content.watchProviders[0]
         providerName = providerMap.get(providerId as 0 | 8 | 119 | 122 | 220 | 2336 | 232 | 237 | 515 | 1898) || "null"
       }
-      const query = encodeURIComponent(`${content.title} ${providerName} ${content.releaseDate}`)
+      const query = encodeURIComponent(`${content.title} ${providerName} ${date.getFullYear()}`)
       window.open(`https://www.google.com/search?q=${query}`, "_blank")
     }
   }
