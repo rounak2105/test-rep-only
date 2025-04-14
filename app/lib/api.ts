@@ -16,6 +16,7 @@ export interface Show {
   trailerLink?: string // Added trailerLink as optional
   backdrop_path?: string
   popularity: number
+  homepage?: string
 }
 
 export interface Movie {
@@ -29,6 +30,7 @@ export interface Movie {
   originalCountry: string[]
   showType: "movie"
   watchProviders: number[]
+  homepage?: string
 }
 
 export interface Provider {
