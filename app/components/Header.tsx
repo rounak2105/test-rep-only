@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { Filter, BookOpen, Menu, Home, Tv, Film, X } from "lucide-react"
+import { Filter, BookOpen, Menu, Home, Tv, Film, X, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { AIRecommendButton } from "./AIRecommendButton"
 import { usePathname } from "next/navigation"
@@ -109,6 +109,14 @@ export default function Header({
                 <Button variant="outline" className="bg-secondary text-secondary-foreground hover:bg-secondary/90">
                   <BookOpen className="mr-2 h-4 w-4" />
                   Blog
+                </Button>
+              </Link>
+            </div>
+            <div className="md:hidden">
+              <Link href="/recommend" passHref>
+                <Button className="flex items-center gap-1 px-2 py-1 text-[11px] font-semibold rounded bg-[#6D28D9] hover:bg-[#5B21B6] text-white shadow-sm h-7 min-w-0">
+                  <Sparkles className="h-3.5 w-3.5 mr-0.5" />
+                  <span className="whitespace-nowrap">AI</span>
                 </Button>
               </Link>
             </div>
