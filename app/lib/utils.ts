@@ -52,6 +52,7 @@ export const languageMap: Record<string, string> = {
   tr: "Turkish",
   uk: "Ukrainian",
   vi: "Vietnamese",
+  pa: "Punjabi",
 }
 
 export const genreMap = [
